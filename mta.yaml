@@ -25,7 +25,7 @@ modules:
           srv-url: ${default-url}
     requires:
       - name: lsossrv-xsuaa
-      - name: lsosrv-hdi-container
+      - name: lsossrv-hdi-container
       - name: iESM-destination-services
 
   # HANA DB HDI Container Deployer
@@ -41,7 +41,7 @@ modules:
       requires:
         - name: lso-selfsrv-srv
     requires:
-      - name: lsosrv-hdi-container
+      - name: lsossrv-hdi-container
 
   - name: lso-selfsrv-srv-app
     type: approuter.nodejs
@@ -65,13 +65,11 @@ modules:
           url: ${default-url}
 
 resources:
-  - name: lsosrv-hdi-container
+  - name: lsossrv-hdi-container
     parameters:
       service: hana
       service-plan: hdi-shared
     type: org.cloudfoundry.managed-service
-    properties:
-      hdi-container-name: ${service-name}
   - name: lsossrv-xsuaa
     parameters:
       path: ./xs-security.json
