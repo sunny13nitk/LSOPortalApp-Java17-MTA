@@ -22,7 +22,7 @@ parameters:
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
-          srv-url: ${default-url}
+          srv-url: '${default-url}'
     requires:
       - name: lsossrv-xsuaa
       - name: lsosrv-hana
@@ -46,7 +46,7 @@ parameters:
     provides:
       - name: app-api
         properties:
-          url: ${default-url}
+          url: '${default-url}'
   # HANA DB Container Deployer   
   - name: lsosrv-hana-deployer
     type: hdb
