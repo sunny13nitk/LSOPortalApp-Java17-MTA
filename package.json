@@ -5,8 +5,8 @@
     },
     "scripts": {
         "start": "node node_modules/@sap/approuter/approuter.js",
-        "build": "npm run build:cds && npm run build:copy",
-        "build:cds": "cds build/all --clean",
+        "build": "npm run build:cds",
+        "build:cds": "cds build --clean",
         "build:xs-security": "cds compile srv/ --to xsuaa  > xs-security.json",
         "build:copy": "copyfiles -f srv/src/main/resources/edmx/csn.json odatav2-proxy/gen/",
         "build:deploy": "npm run build && npm run deploy",
