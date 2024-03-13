@@ -17,7 +17,7 @@ modules:
     build-parameters:
       builder: custom
       commands:
-        - mvn clean install -DskipTests
+        - mvn clean install -DskipTests=true
       build-result: target/*-exec.jar
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
@@ -25,8 +25,23 @@ modules:
           srv-url: ${default-url}
     requires:
       - name: lsossrv-xsuaa
-      - name: lsosrv-hana
-      - name: iESM-destination-services     
+      - name: lsosrv-hdi-container
+      - name: iESM-destination-services
+
+  # HANA DB HDI Container Deployer
+  - name: lsossrv-hana-db
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: custom
+      commands:
+        - npm run build
+      requires:
+        - name: lso-selfsrv-srv
+    requires:
+      - name: lsosrv-hdi-container
 
   - name: lso-selfsrv-srv-app
     type: approuter.nodejs
@@ -42,29 +57,19 @@ modules:
           name: srv-api # must be used in xs-app.json as well
           url: ~{srv-url}
           forwardAuthToken: true
+          strictSSL: true
       - name: lsossrv-xsuaa
     provides:
       - name: app-api
         properties:
           url: ${default-url}
-  # HANA DB Container Deployer   
-  - name: lsosrv-hana-deployer
-    type: hdb
-    path: db
-    parameters:
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: custom
-      commands:
-        - npm run build
-    requires:
-      - name: lsosrv-hana          
+
 resources:
-  - name: lsosrv-hana
+  - name: lsosrv-hdi-container
     parameters:
       service: hana
       service-plan: hdi-shared
-    type: com.sap.xs.hdi-container
+    type: org.cloudfoundry.managed-service
     properties:
       hdi-container-name: ${service-name}
   - name: lsossrv-xsuaa
