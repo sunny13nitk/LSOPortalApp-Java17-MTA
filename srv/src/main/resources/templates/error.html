@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>My App</title>
+<!-- Metro 4 -->
+<link rel="stylesheet"
+   href="https://cdn.metroui.org.ua/v4.3.2/css/metro-all.min.css">
+<title>Employee Self Service App</title>
+</head>
+<body>
+
+   <div style="margin-top: 80px">
+
+      <div class="card" style="width: 800px;">
+         <div class="card-header">
+
+            <div class="remark alert "
+               style="padding-top: 10px; margin: 2px">
+               <h2>Error!</h2>
+               <h3 style="color: #8000fc" th:text="${formError}"></h3>
+            </div>
+
+         </div>
+      </div>

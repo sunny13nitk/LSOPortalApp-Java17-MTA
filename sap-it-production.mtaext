@@ -1,0 +1,14 @@
+_schema-version: '3.1'
+ID: lso-selfsrv-extension
+extends: lso-selfsrv
+modules:
+  - name: lso-selfsrv-srv
+    parameters:
+      routes:
+        - route: "${default-url}"
+        - route: "lso-selfsrv-srv-prod.cfapps.eu10-004.hana.ondemand.com"
+  - name: lso-selfsrv-srv-app
+    parameters:
+      routes:
+        - route: "${default-url}"
+        - route: "lso-selfsrv-app-prod.cfapps.eu10-004.hana.ondemand.com"  

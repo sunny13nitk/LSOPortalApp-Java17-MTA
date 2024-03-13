@@ -1,0 +1,7 @@
+caseType,fromStatus,toStatus,caseEditAllowed
+ZLSS,Open,Open,true
+ZLSS,In Process,In Process,true
+ZLSS,Customer Action,In Process,true
+ZLSS,Completed,In Process,true
+ZLSS,Closed,Closed,false
+ZLSS,Awaiting Third Party Action,Awaiting Third Party Action,true
