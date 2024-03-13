@@ -36,6 +36,7 @@ public class AppSecurityConfigLocal
         http.logout((logout) -> logout.logoutSuccessUrl("/logout/").permitAll())
         .authorizeRequests()
         .requestMatchers(HttpMethod.GET, "/static/**").permitAll()
+        .requestMatchers("/api/**").permitAll()
         .requestMatchers("/poclocal/**").permitAll().and().csrf()
         .disable() // don't insist on csrf tokens in put, post etc.
         .authorizeRequests().anyRequest().denyAll();

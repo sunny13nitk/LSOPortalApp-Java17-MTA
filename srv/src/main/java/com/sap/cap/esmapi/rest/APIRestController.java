@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +47,7 @@ import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 import com.sap.cloud.security.xsuaa.token.Token;
 
 @RestController
+@Profile(GC_Constants.gc_LocalProfile)
 @RequestMapping("/api")
 public class APIRestController
 {
