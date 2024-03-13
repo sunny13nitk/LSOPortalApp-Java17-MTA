@@ -1,6 +1,6 @@
 _schema-version: "3.1"
 ID: lso-selfsrv
-version: 1.0.0-SNAPSHOT
+version: 1.0.0
 description: "LSO Self Service Application"
 parameters:
   enable-parallel-deployments: true
@@ -22,12 +22,12 @@ parameters:
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
-          srv-url: '${default-url}'
+          srv-url: ${default-url}
     requires:
       - name: lsossrv-xsuaa
       - name: lsosrv-hana
       - name: iESM-destination-services     
-# Application Router as web server
+
   - name: lso-selfsrv-srv-app
     type: approuter.nodejs
     path: app/
@@ -46,7 +46,7 @@ parameters:
     provides:
       - name: app-api
         properties:
-          url: '${default-url}'
+          url: ${default-url}
   # HANA DB Container Deployer   
   - name: lsosrv-hana-deployer
     type: hdb
