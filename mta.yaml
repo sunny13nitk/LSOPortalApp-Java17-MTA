@@ -4,7 +4,7 @@ version: 1.0.0
 description: "LSO Self Service Application"
 parameters:
   enable-parallel-deployments: true
-  modules:
+modules:
   - name: lso-selfsrv-srv
     type: java
     path: srv
