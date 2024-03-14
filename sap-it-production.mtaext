@@ -7,7 +7,7 @@ modules:
     path: srv
     parameters:
       buildpack: sap_java_buildpack
-      memory: 1G
+      memory: 2G
       routes:
         - route: "${default-url}"
         - route: "lsossrv.cfapps.eu10-004.hana.ondemand.com"
@@ -52,7 +52,7 @@ modules:
     parameters:
       keep-existing-routes: true
       disk-quota: 1024M
-      memory: 256M
+      memory: 512M
     requires:
       - name: srv-api
         group: destinations
