@@ -28,7 +28,7 @@
       "authenticationType": "xsuaa",
       "cacheControl": "no-cache, no-store, must-revalidate"
     },
-    {
+    /*{
       "source": "^/common-navigation-api/(.*)$",
       "target": "/common-navigation-api/$1",
       "destination": "common_navigation_proxy",
@@ -45,7 +45,7 @@
       "target": "/assets/newlxp-components/$1",
       "destination": "common_navigation_resources",
       "authenticationType": "none"
-    },
+    },*/
     {
       "source": "^/login(.*)",
       "target": "/login$1",
