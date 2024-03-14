@@ -11,8 +11,8 @@
                     "Authentication": "NoAuthentication",
                     "ProxyType": "Internet",
                     "Type": "HTTP",
-                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com",
-                    "HTML5.DynamicDestination": true
+                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com"
+                    
                 },
                 {
                     "Name": "common_navigation_proxy_public",
@@ -20,8 +20,8 @@
                     "Authentication": "NoAuthentication",
                     "ProxyType": "Internet",
                     "Type": "HTTP",
-                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com",
-                    "HTML5.DynamicDestination": true
+                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com"
+                    
                 },
                 {
                     "Name": "common_navigation_resources",
@@ -29,8 +29,8 @@
                     "Authentication": "NoAuthentication",
                     "ProxyType": "Internet",
                     "Type": "HTTP",
-                    "URL": "https://newlxp-components-dev.cfapps.eu10.hana.ondemand.com/",
-                    "HTML5.DynamicDestination": true
+                    "URL": "https://newlxp-components-dev.cfapps.eu10.hana.ondemand.com/"
+                    
                 }
             ]
         }
