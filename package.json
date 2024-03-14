@@ -4,13 +4,6 @@
         "@sap/approuter": "^16.1.1"
     },
     "scripts": {
-        "start": "node node_modules/@sap/approuter/approuter.js",
-        "build": "npm run build:cds",
-        "build:cds": "cds build --clean",
-        "build:xs-security": "cds compile srv/ --to xsuaa  > xs-security.json",
-        "build:copy": "copyfiles -f srv/src/main/resources/edmx/csn.json odatav2-proxy/gen/",
-        "build:deploy": "npm run build && npm run deploy",
-        "build:deploy:cf": "npm run build:cf && npm run deploy:cf",
-        "build:cf": "mbt build -p cf"
+        "start": "node node_modules/@sap/approuter/approuter.js"
     }
 }
