@@ -34,33 +34,7 @@
       "destination": "srv-api",
       "authenticationType": "xsuaa",
       "cacheControl": "no-cache, no-store, must-revalidate"
-    },
-
-    {
-      "source": "^/assets/newlxp-components/(.*)$",
-      "target": "/assets/newlxp-components/$1",
-      "destination": "common_navigation_resources",
-      "authenticationType": "none"
-    },
-
-    {
-      "source": "^/common-navigation-api/(.*)$",
-      "target": "/common-navigation-api/$1",
-      "destination": "common_navigation_proxy",
-      "authenticationType": "none"
-    },
-    {
-      "source": "^/common-navigation-api-public/(.*)$",
-      "target": "/common-navigation-api/$1",
-      "destination": "common_navigation_proxy_public",
-      "authenticationType": "none"
-    },
-    
-    {
-      "source": "^/web-components.js$",
-      "target": "/web-components.js",
-      "destination": "common_navigation_resources",
-      "authenticationType": "none"
     }
+
   ]
 }
