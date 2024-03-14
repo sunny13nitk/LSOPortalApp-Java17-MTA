@@ -29,6 +29,12 @@
       "cacheControl": "no-cache, no-store, must-revalidate"
     },
     {
+      "source": "^/common-navigation-api/(.*)$",
+      "target": "/common-navigation-api/$1",
+      "destination": "common_navigation_proxy",
+      "authenticationType": "xsuaa"
+    },    
+    {
       "source": "^/login(.*)",
       "target": "/login$1",
       "destination": "srv-api",

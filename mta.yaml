@@ -80,4 +80,15 @@ resources:
     parameters:
       service-plan: lite
       service: destination
-    type: org.cloudfoundry.managed-service
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: common_navigation_proxy
+                ProxyType: Internet
+                Type: HTTP
+                URL:  https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com              
+            existing_destinations_policy: update
+    type: org.cloudfoundry.managed-service    
