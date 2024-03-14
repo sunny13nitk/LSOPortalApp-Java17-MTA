@@ -1,0 +1,38 @@
+{
+    "HTML5Runtime_enabled": true,
+    "version": "1.0.0",
+    "init_data": {
+        "instance": {
+            "existing_destinations_policy": "update",
+            "destinations": [
+                {
+                    "Name": "common_navigation_proxy",
+                    "Description": "common_navigation_proxy",
+                    "Authentication": "NoAuthentication",
+                    "ProxyType": "Internet",
+                    "Type": "HTTP",
+                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com",
+                    "HTML5.DynamicDestination": true
+                },
+                {
+                    "Name": "common_navigation_proxy_public",
+                    "Description": "common_navigation_proxy_public",
+                    "Authentication": "NoAuthentication",
+                    "ProxyType": "Internet",
+                    "Type": "HTTP",
+                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com",
+                    "HTML5.DynamicDestination": true
+                },
+                {
+                    "Name": "common_navigation_resources",
+                    "Description": "common_navigation_resources",
+                    "Authentication": "NoAuthentication",
+                    "ProxyType": "Internet",
+                    "Type": "HTTP",
+                    "URL": "https://newlxp-components-dev.cfapps.eu10.hana.ondemand.com/",
+                    "HTML5.DynamicDestination": true
+                }
+            ]
+        }
+    }
+}

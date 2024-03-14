@@ -80,5 +80,5 @@ resources:
     parameters:
       service-plan: lite
       service: destination
-      service-name: iESM-destination-services
+      path: ./destination.json
     type: org.cloudfoundry.managed-service
