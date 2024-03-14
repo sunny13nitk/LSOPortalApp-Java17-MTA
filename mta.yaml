@@ -51,6 +51,7 @@ modules:
       disk-quota: 1024M
       memory: 256M
     requires:
+      - name: iESM-destination-services
       - name: srv-api
         group: destinations
         properties:
@@ -63,7 +64,6 @@ modules:
       - name: app-api
         properties:
           url: ${default-url}
-      - name: iESM-destination-services    
 
 resources:
   - name: lsossrv-hdi-container
