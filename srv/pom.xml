@@ -199,14 +199,14 @@
 							<goal>clean</goal>
 						</goals>
 					</execution>
-
+					<!-- INSTALL NODE AND NPM -->
 					<execution>
 						<id>cds.install-node</id>
 						<goals>
 							<goal>install-node</goal>
 						</goals>
 						<configuration>
-							<skip>${cdsdk-global}</skip>
+							<downloadUrl>${node.url}</downloadUrl>
 						</configuration>
 					</execution>
 
