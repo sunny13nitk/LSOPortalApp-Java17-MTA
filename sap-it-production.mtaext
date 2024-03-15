@@ -9,6 +9,7 @@ modules:
       buildpack: sap_java_buildpack
       memory: 2G
       routes:
+        - route: "${default-url}"
         - route: "lso_ssrv.cfapps.eu10-004.hana.ondemand.com"
     properties:
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
@@ -33,6 +34,8 @@ modules:
     path: db
     parameters:
       buildpack: nodejs_buildpack
+      routes:
+        - route: "${default-url}"  
     build-parameters:
       builder: custom
       commands:
