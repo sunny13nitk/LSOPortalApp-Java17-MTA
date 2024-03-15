@@ -9,7 +9,7 @@ modules:
       buildpack: sap_java_buildpack
       memory: 1G
       routes:
-        - route: "lsossrv-test.cfapps.eu10-004.hana.ondemand.com"
+        - route: "lso_ssrv-test.cfapps.eu10-004.hana.ondemand.com"
     properties:
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
       JBP_CONFIG_SAP_MACHINE_JRE: "{ version: 17.+ }"
@@ -50,7 +50,7 @@ modules:
       disk-quota: 1024M
       memory: 512M
       routes:
-        - route: "lsossrv-app-test.cfapps.eu10-004.hana.ondemand.com"  
+        - route: "lso_ssrv-app-test.cfapps.eu10-004.hana.ondemand.com"  
     requires:
       - name: srv-api
         group: destinations
