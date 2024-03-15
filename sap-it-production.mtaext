@@ -9,7 +9,6 @@ modules:
       buildpack: sap_java_buildpack
       memory: 2G
       routes:
-        - route: "${default-url}"
         - route: "lsossrv.cfapps.eu10-004.hana.ondemand.com"
     properties:
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
@@ -34,9 +33,6 @@ modules:
     path: db
     parameters:
       buildpack: nodejs_buildpack
-      routes:
-        - route: "${default-url}"
-        - route: "lsossrv-app.cfapps.eu10-004.hana.ondemand.com"
     build-parameters:
       builder: custom
       commands:
@@ -53,6 +49,8 @@ modules:
       keep-existing-routes: true
       disk-quota: 1024M
       memory: 512M
+      routes:
+        - route: "lsossrv-app.cfapps.eu10-004.hana.ondemand.com"
     requires:
       - name: srv-api
         group: destinations
