@@ -11,10 +11,7 @@
                     "Authentication": "OAuth2UserTokenExchange",
                     "ProxyType": "Internet",
                     "Type": "HTTP",
-                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com",
-                    "tokenServiceURL": "https://learninghub3test.authentication.eu10.hana.ondemand.com/oauth/token",
-                    "clientId":"sb-common-approuter!t30973"
-
+                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com"
                 },
                 {
                     "Name": "common_navigation_proxy_public",

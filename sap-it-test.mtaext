@@ -83,5 +83,5 @@ resources:
     parameters:
       service-plan: lite
       service: destination
-      # path: ./destination.json
+      # path: ./destination-test.json
     type: org.cloudfoundry.managed-service

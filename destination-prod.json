@@ -1,0 +1,32 @@
+{
+    "HTML5Runtime_enabled": true,
+    "version": "1.0.0",
+    "init_data": {
+        "instance": {
+            "existing_destinations_policy": "ignore",
+            "destinations": [
+                {
+                    "Name": "common_navigation_proxy",
+                    "Description": "common_navigation_proxy",
+                    "Authentication": "OAuth2UserTokenExchange",
+                    "ProxyType": "Internet",
+                    "Type": "HTTP"
+                },
+                {
+                    "Name": "common_navigation_proxy_public",
+                    "Description": "common_navigation_proxy_public",
+                    "Authentication": "NoAuthentication",
+                    "ProxyType": "Internet",
+                    "Type": "HTTP"
+                },
+                {
+                    "Name": "common_navigation_resources",
+                    "Description": "common_navigation_resources",
+                    "Authentication": "NoAuthentication",
+                    "ProxyType": "Internet",
+                    "Type": "HTTP"
+                }
+            ]
+        }
+    }
+}
