@@ -3,16 +3,18 @@
     "version": "1.0.0",
     "init_data": {
         "instance": {
-            "existing_destinations_policy": "update",
+            "existing_destinations_policy": "ignore",
             "destinations": [
                 {
                     "Name": "common_navigation_proxy",
                     "Description": "common_navigation_proxy",
-                    "Authentication": "NoAuthentication",
+                    "Authentication": "OAuth2UserTokenExchange",
                     "ProxyType": "Internet",
                     "Type": "HTTP",
-                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com"
-                    
+                    "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com",
+                    "tokenServiceURL": "https://learninghub3test.authentication.eu10.hana.ondemand.com/oauth/token",
+                    "clientId":"sb-common-approuter!t30973"
+
                 },
                 {
                     "Name": "common_navigation_proxy_public",
@@ -21,7 +23,6 @@
                     "ProxyType": "Internet",
                     "Type": "HTTP",
                     "URL": "https://newlxp-backend-dev.cfapps.eu10.hana.ondemand.com"
-                    
                 },
                 {
                     "Name": "common_navigation_resources",
@@ -30,7 +31,6 @@
                     "ProxyType": "Internet",
                     "Type": "HTTP",
                     "URL": "https://newlxp-components-dev.cfapps.eu10.hana.ondemand.com/"
-                    
                 }
             ]
         }
