@@ -1403,6 +1403,13 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
             clearPreviousSubmission4mSessionBuffer();
             // Push Form data to Session
             TY_CaseEditFormAsync caseReplyAsync = new TY_CaseEditFormAsync();
+
+            // Format the text input for New Lines
+            String formattedReply = caseReplyForm.getReply().replaceAll("\r\n", "<br/>");
+            if (StringUtils.hasText(formattedReply))
+            {
+                caseReplyForm.setReply(formattedReply);
+            }
             caseReplyAsync.setCaseReply(caseReplyForm);
             caseReplyAsync.setSubmGuid(UUID.randomUUID().toString());
             // Latest time Stamp from Form Submissions

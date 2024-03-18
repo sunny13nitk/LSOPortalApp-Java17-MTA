@@ -374,7 +374,7 @@
                                 </blockquote>
                             </div>
 
-                            <div class="cell-8">
+                            <div class="cell-7">
                                 <span class="remark dark" th:if="${caseEditForm.getCaseDetails().description != null}"
                                     th:text="${caseEditForm.getCaseDetails().description }">
                                 </span>
@@ -421,8 +421,9 @@
                                     You enter 0 char(s)
                                 </p>
 
-                                <textarea data-role="textarea" data-prepend="<span class='mif-leanpub mif-3x'></span>"
-                                    data-cls-prepend="bg-light" th:field="*{reply}" data-chars-counter="#chars-counter"
+                                <textarea data-role="textarea" th:unescaped="true"
+                                    data-prepend="<span class='mif-leanpub mif-3x'></span>" data-cls-prepend="bg-light"
+                                    th:field="*{reply}" data-chars-counter="#chars-counter"
                                     data-chars-counter-template="You enter $1 char(s)"
                                     data-clear-button-icon="<span class='mif-cross fg-black'></span>">
                                 </textarea>
@@ -462,7 +463,8 @@
                                                 </h6>
 
                                             </div>
-                                            <div style="font-size: 1.1em;" th:utext="${note.content}"></div>
+                                            <div style="font-size: 1.1em; overflow:auto; width: 900px; height: 800px;"
+                                                th:utext="${note.content}"></div>
                                             <!-- </div> -->
                                         </div>
                                     </div>
@@ -471,7 +473,7 @@
                                         data-cls-title="bg-lightGray fg-black"
                                         data-title-icon="<span class='mif-apps'></span>" data-collapsed="false"
                                         data-collapsible="true" data-cls-content="bg-transparent fg-black"
-                                        class="colspan-9 offset-1">
+                                        class="colspan-9 offset-1" style="overflow:auto; width: 600px; height: 600px;">
 
                                         <div th:if="${note.content != null}">
                                             <!-- <div class="row colspan-9 offset-1"> -->
@@ -488,7 +490,8 @@
                                                 </h6>
 
                                             </div>
-                                            <div style="font-size: 1.1em;" th:utext="${note.content}"></div>
+                                            <div style="font-size: 1.1em; overflow:auto; width: 900px; height: 800px;"
+                                                th:utext="${note.content}"></div>
                                             <!-- </div> -->
                                         </div>
                                     </div>
