@@ -21,6 +21,7 @@ public class DestinationsSuffixes
             @Value("${cpurlPathString}") final String cpUrlPathString,
             @Value("${accountsurlPathString}") final String acUrlPathString,
             @Value("${notesurlPathString}") final String notesUrlPathString,
+            @Value("${notesReadPathString}") final String notesReadPathString,            
             @Value("${topNPathString}") final String topNPathString,
             @Value("${caseTemplateUrlPathString}") final String caseTemplateUrlPathString,
             @Value("${catgTreeUrlPathString}") final String catgTreeUrlPathString,
@@ -43,7 +44,7 @@ public class DestinationsSuffixes
 
     {
         TY_DestinationsSuffix destinationsSuffixes = new TY_DestinationsSuffix(casesUrlPathString, cpUrlPathString,
-                acUrlPathString, notesUrlPathString, topNPathString, caseTemplateUrlPathString, catgTreeUrlPathString,
+                acUrlPathString, notesUrlPathString,notesReadPathString, topNPathString, caseTemplateUrlPathString, catgTreeUrlPathString,
                 docSrvUrlPathString, emplSrvUrlPathString, vhlpUrlPathString, caseDetailsUrlPathString,
                 statusCfgUrlPathString, accByEmailUrlPathString, conByEmailUrlPathString, empByIdUrlPathString,
                 casesByAccUrlPathString, casesByEmplUrlPathString, customerUrlPathString, prevAttPathString,

@@ -21,6 +21,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_Case_Customer_SrvCloud;
 import com.sap.cap.esmapi.utilities.pojos.TY_Case_Employee_SrvCloud;
 import com.sap.cap.esmapi.utilities.pojos.TY_Case_SrvCloud_Reply;
 import com.sap.cap.esmapi.utilities.pojos.TY_NotesCreate;
+import com.sap.cap.esmapi.utilities.pojos.TY_NotesDetails;
 import com.sap.cap.esmapi.utilities.pojos.TY_PreviousAttachments;
 import com.sap.cap.esmapi.utilities.pojos.Ty_UserAccountEmployee;
 import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_DestinationProps;
@@ -98,5 +99,8 @@ public interface IF_SrvCloudAPI
 
         public List<TY_PreviousAttachments> getAttachments4Case(String caseGuid, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;
+
+        public List<TY_NotesDetails> getFormattedExternalNotes4Case(String caseGuid, String extNoteType,
+                        TY_DestinationProps desProps) throws EX_ESMAPI, IOException;
 
 }

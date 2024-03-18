@@ -15,6 +15,7 @@ public class TY_DestinationsSuffix
     private String cpUrlPathString;
     private String accountsUrlPathString;
     private String notesUrlPathString;
+    private String notesReadUrlPathString;
     private String topSuffixPathString;
     private String caseTemplateUrlPathString;
     private String catgTreeUrlPathString;

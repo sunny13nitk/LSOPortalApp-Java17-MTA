@@ -1303,7 +1303,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                             caseDetails.setStatus(caseESS.getStatusDesc());
                             caseDetails.setDescription(caseESS.getSubject());
                             caseDetails.setOrigin(caseESS.getOrigin());
-                            if (CollectionUtils.isNotEmpty(caseDetails.getNotes()))
+                            if (CollectionUtils.isNotEmpty(caseDetails.getNotes())) // Only Description Bound till here
                             {
                                 // Get External Note Type(s) for Current Case Type
                                 if (CollectionUtils.isNotEmpty(catgCusSrv.getCustomizations()))
@@ -1320,6 +1320,20 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                                                     .asList(cusIO.get().getAppNoteTypes().split("\\|"));
                                             if (CollectionUtils.isNotEmpty(appNoteTypes))
                                             {
+                                                // First Note Type Configured as External Note
+                                                // Use the Same for Query to Get Formatted External Notes
+                                                String extNoteType = appNoteTypes.get(0);
+
+                                                // Getting Formatted External Notes Here
+
+                                                List<TY_NotesDetails> fmExtNotes = srvCloudApiSrv
+                                                        .getFormattedExternalNotes4Case(caseDetails.getCaseGuid(),
+                                                                extNoteType, userSessInfo.getDestinationProps());
+                                                if (CollectionUtils.isNotEmpty(fmExtNotes))
+                                                {
+                                                    caseDetails.getNotes().addAll(fmExtNotes);
+                                                }
+
                                                 // Filter by External Note Type(s) only
                                                 List<TY_NotesDetails> notesExternal = caseDetails.getNotes().stream()
                                                         .filter(n -> appNoteTypes.contains(n.getNoteType()))

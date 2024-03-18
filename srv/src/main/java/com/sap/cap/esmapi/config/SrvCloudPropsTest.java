@@ -14,7 +14,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_SrvCloudUrls;
 @Configuration
 @Profile(GC_Constants.gc_LocalProfile)
 @PropertySources(
-{ @PropertySource("classpath:srvcloudurls-testblank.properties") })
+{ @PropertySource("classpath:srvcloudurls-test.properties") })
 public class SrvCloudPropsTest
 {
     @Bean
@@ -23,8 +23,8 @@ public class SrvCloudPropsTest
             @Value("${password}") final String password, @Value("${usernameext}") final String userNameExt,
             @Value("${passwordext}") final String passwordExt, @Value("${casesurl}") final String casesUrl,
             @Value("${cpurl}") final String cpUrl, @Value("${accountsurl}") final String acUrl,
-            @Value("${notesurl}") final String notesUrl, @Value("${topN}") final String topN,
-            @Value("${caseTemplateUrl}") final String caseTemplateUrl,
+            @Value("${notesurl}") final String notesUrl, @Value("${notesreadurl}") final String notesreadUrl,
+            @Value("${topN}") final String topN, @Value("${caseTemplateUrl}") final String caseTemplateUrl,
             @Value("${catgTreeUrl}") final String catgTreeUrl, @Value("${docSrvUrl}") final String docSrvUrl,
             @Value("${emplSrvUrl}") final String emplSrvUrl, @Value("${vhlpUrl}") final String vhlpUrl,
             @Value("${caseDetailsUrl}") final String caseDetailsUrl,
@@ -39,9 +39,9 @@ public class SrvCloudPropsTest
 
     {
         TY_SrvCloudUrls srvClUrls = new TY_SrvCloudUrls(userName, password, userNameExt, passwordExt, casesUrl, cpUrl,
-                acUrl, notesUrl, topN, caseTemplateUrl, catgTreeUrl, docSrvUrl, emplSrvUrl, vhlpUrl, caseDetailsUrl,
-                statusCfgUrl, accByEmailUrl, conByEmailUrl, empByIdUrl, casesByAccUrl, casesByEmplUrl, customerUrl,
-                prevAtt, dlAtt, baseUrl, token);
+                acUrl, notesUrl, notesreadUrl, topN, caseTemplateUrl, catgTreeUrl, docSrvUrl, emplSrvUrl, vhlpUrl,
+                caseDetailsUrl, statusCfgUrl, accByEmailUrl, conByEmailUrl, empByIdUrl, casesByAccUrl, casesByEmplUrl,
+                customerUrl, prevAtt, dlAtt, baseUrl, token);
 
         return srvClUrls;
     }

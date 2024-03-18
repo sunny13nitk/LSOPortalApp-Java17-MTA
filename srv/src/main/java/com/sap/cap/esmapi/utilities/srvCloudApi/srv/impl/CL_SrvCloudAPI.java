@@ -3061,96 +3061,6 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                             caseDetails.setETag(eTag);
                             caseDetails.setNotes(new ArrayList<TY_NotesDetails>());
 
-                            // Add Notes
-                            JsonNode contentNode = rootNode.at("/notes");
-                            if (contentNode != null && contentNode.isArray() && contentNode.size() > 0)
-                            {
-                                log.info("Notes for Case ID : " + caseId + " bound..");
-                                for (JsonNode arrayItem : contentNode)
-                                {
-                                    String content = null, noteType = null, userCreate = null, timestamp = null,
-                                            id = null, noteId = null;
-                                    boolean agentNote = false;
-
-                                    OffsetDateTime odt = null;
-
-                                    Iterator<Entry<String, JsonNode>> fields = arrayItem.fields();
-                                    while (fields.hasNext())
-                                    {
-                                        Entry<String, JsonNode> jsonField = fields.next();
-                                        if (jsonField.getKey().equals("id"))
-                                        {
-                                            id = jsonField.getValue().asText();
-                                        }
-
-                                        if (jsonField.getKey().equals("noteId"))
-                                        {
-                                            noteId = jsonField.getValue().asText();
-                                        }
-
-                                        if (jsonField.getKey().equals("content"))
-                                        {
-                                            content = jsonField.getValue().asText();
-                                        }
-
-                                        if (jsonField.getKey().equals("noteType"))
-                                        {
-                                            noteType = jsonField.getValue().asText();
-                                        }
-
-                                        if (jsonField.getKey().equals("adminData"))
-                                        {
-                                            JsonNode adminNode = jsonField.getValue();
-                                            if (adminNode != null)
-                                            {
-                                                Iterator<String> fieldNames = adminNode.fieldNames();
-                                                while (fieldNames.hasNext())
-                                                {
-                                                    String caseFieldName = fieldNames.next();
-
-                                                    if (caseFieldName.equals("createdOn"))
-                                                    {
-
-                                                        if (StringUtils.hasText(adminNode.get(caseFieldName).asText()))
-                                                        {
-
-                                                            timestamp = adminNode.get(caseFieldName).asText();
-                                                            // Parse the date-time string into OffsetDateTime
-                                                            odt = OffsetDateTime.parse(timestamp);
-                                                        }
-                                                    }
-
-                                                    if (caseFieldName.equals("createdByName"))
-                                                    {
-
-                                                        if (StringUtils.hasText(adminNode.get(caseFieldName).asText()))
-                                                        {
-                                                            userCreate = adminNode.get(caseFieldName).asText();
-                                                            if (StringUtils.hasText(rlConfig.getTechUserRegex()))
-                                                            {
-                                                                if (!userCreate.startsWith(rlConfig.getTechUserRegex()))
-                                                                {
-                                                                    agentNote = true;
-                                                                }
-
-                                                            }
-                                                        }
-
-                                                    }
-
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                    TY_NotesDetails newNote = new TY_NotesDetails(noteType, id, noteId, odt, userCreate,
-                                            content, agentNote);
-                                    caseDetails.getNotes().add(newNote);
-
-                                }
-
-                            }
-
                             // Add Description
                             JsonNode descNode = rootNode.at("/description");
                             if (descNode != null && descNode.size() > 0)
@@ -4018,6 +3928,88 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         }
 
         return prevAtt;
+    }
+
+    @Override
+    public List<TY_NotesDetails> getFormattedExternalNotes4Case(String caseId, String extNoteType,
+            TY_DestinationProps desProps) throws EX_ESMAPI, IOException
+    {
+        List<TY_NotesDetails> formattedExternalNotes = new ArrayList<TY_NotesDetails>();
+        if (StringUtils.hasText(caseId))
+        {
+            JsonNode jsonNode = null;
+            HttpResponse response = null;
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            String urlLink = null;
+
+            if (StringUtils.hasText(caseId) && StringUtils.hasText(srvCloudUrls.getNotesReadUrl()))
+
+            {
+                log.info("Fetching External Notes for Case ID : " + caseId);
+                try
+                {
+                    urlLink = StringsUtility.replaceURLwithParams(srvCloudUrls.getNotesReadUrl(), new String[]
+                    { caseId, extNoteType }, GC_Constants.gc_UrlReplParam);
+
+                    if (StringUtils.hasText(urlLink))
+                    {
+                        String encoding = Base64.getEncoder().encodeToString(
+                                (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
+
+                        HttpGet httpGet = new HttpGet(urlLink);
+
+                        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                        httpGet.addHeader("accept", "application/json");
+
+                        // Fire the Url
+                        response = httpClient.execute(httpGet);
+
+                        // verify the valid error code first
+                        int statusCode = response.getStatusLine().getStatusCode();
+                        if (statusCode != HttpStatus.SC_OK)
+                        {
+                            String msg = msgSrc.getMessage("ERR_CASE_DET_FETCH", new Object[]
+                            { caseId }, Locale.ENGLISH);
+                            log.error(msg);
+                            throw new EX_ESMAPI(msg);
+                        }
+
+                        // Try and Get Entity from Response
+                        HttpEntity entity = response.getEntity();
+                        String apiOutput = EntityUtils.toString(entity);
+
+                        // Conerting to JSON
+                        ObjectMapper mapper = new ObjectMapper();
+                        jsonNode = mapper.readTree(apiOutput);
+
+                        if (jsonNode != null)
+                        {
+                            JsonNode rootNode = jsonNode.path("value");
+                            if (rootNode != null && rootNode.isArray() && rootNode.size() > 0)
+                            {
+                                log.info("Notes for Case ID : " + caseId + " bound..");
+                            }
+                        }
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASE_NOTESF_FETCH", new Object[]
+                    { caseId, e.getMessage() }, Locale.ENGLISH));
+
+                }
+                finally
+                {
+                    httpClient.close();
+                }
+
+            }
+
+        }
+
+        return formattedExternalNotes;
     }
 
     private String getPOSTURL4BaseUrl(String urlBase)
