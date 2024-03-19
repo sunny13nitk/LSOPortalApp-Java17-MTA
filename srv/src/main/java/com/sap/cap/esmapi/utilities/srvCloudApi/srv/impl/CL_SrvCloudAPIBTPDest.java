@@ -3936,7 +3936,7 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                                                                                 Date date = Date.from(instant);
 
                                                                                 SimpleDateFormat sdf = new SimpleDateFormat(
-                                                                                        "dd/M/yyyy");
+                                                                                        "dd/M/yyyy HH:mm:ss");
                                                                                 dateFormatted = sdf.format(date);
                                                                             }
 
