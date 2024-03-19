@@ -100,7 +100,7 @@ public interface IF_SrvCloudAPI
         public List<TY_PreviousAttachments> getAttachments4Case(String caseGuid, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;
 
-        public List<TY_NotesDetails> getFormattedExternalNotes4Case(String caseGuid, String extNoteType,
-                        TY_DestinationProps desProps) throws EX_ESMAPI, IOException;
+        public List<TY_NotesDetails> getFormattedNotes4Case(String caseGuid, TY_DestinationProps desProps)
+                        throws EX_ESMAPI, IOException;
 
 }

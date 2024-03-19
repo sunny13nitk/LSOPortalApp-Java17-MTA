@@ -444,6 +444,13 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
 
             }
 
+            // Format the text input for New Lines
+            String formattedReply = caseForm.getDescription().replaceAll("\r\n", "<br/>");
+            if (StringUtils.hasText(formattedReply))
+            {
+                caseForm.setDescription(formattedReply);
+            }
+
             caseFormAsync.setCaseForm(caseForm);
             caseFormAsync.setSubmGuid(UUID.randomUUID().toString());
             // Latest time Stamp from Form Submissions
@@ -1303,55 +1310,49 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                             caseDetails.setStatus(caseESS.getStatusDesc());
                             caseDetails.setDescription(caseESS.getSubject());
                             caseDetails.setOrigin(caseESS.getOrigin());
-                            if (CollectionUtils.isNotEmpty(caseDetails.getNotes())) // Only Description Bound till here
+
+                            // Get External Note & Default Note Type(s) for Current Case Type
+                            if (CollectionUtils.isNotEmpty(catgCusSrv.getCustomizations()))
                             {
-                                // Get External Note Type(s) for Current Case Type
-                                if (CollectionUtils.isNotEmpty(catgCusSrv.getCustomizations()))
+                                // Get Customization for Current Case Type
+                                Optional<TY_CatgCusItem> cusIO = catgCusSrv.getCustomizations().stream()
+                                        .filter(c -> c.getCaseType().equals(caseDetails.getCaseType())).findFirst();
+                                if (cusIO.isPresent())
                                 {
-                                    // Get Customization for Current Case Type
-                                    Optional<TY_CatgCusItem> cusIO = catgCusSrv.getCustomizations().stream()
-                                            .filter(c -> c.getCaseType().equals(caseDetails.getCaseType())).findFirst();
-                                    if (cusIO.isPresent())
+                                    // Check if Note Type configured for External Note(s)
+                                    if (StringUtils.hasText(cusIO.get().getAppNoteTypes()))
                                     {
-                                        // Check if Note Type configured for External Note(s)
-                                        if (StringUtils.hasText(cusIO.get().getAppNoteTypes()))
+                                        List<String> appNoteTypes = Arrays
+                                                .asList(cusIO.get().getAppNoteTypes().split("\\|"));
+                                        if (CollectionUtils.isNotEmpty(appNoteTypes))
                                         {
-                                            List<String> appNoteTypes = Arrays
-                                                    .asList(cusIO.get().getAppNoteTypes().split("\\|"));
-                                            if (CollectionUtils.isNotEmpty(appNoteTypes))
+                                            // Get all Note(s) Formatted
+
+                                            // Getting Formatted External Notes Here
+
+                                            List<TY_NotesDetails> fmExtNotes = srvCloudApiSrv.getFormattedNotes4Case(
+                                                    caseDetails.getCaseGuid(), userSessInfo.getDestinationProps());
+                                            if (CollectionUtils.isNotEmpty(fmExtNotes))
                                             {
-                                                // First Note Type Configured as External Note
-                                                // Use the Same for Query to Get Formatted External Notes
-                                                String extNoteType = appNoteTypes.get(0);
-
-                                                // Getting Formatted External Notes Here
-
-                                                List<TY_NotesDetails> fmExtNotes = srvCloudApiSrv
-                                                        .getFormattedExternalNotes4Case(caseDetails.getCaseGuid(),
-                                                                extNoteType, userSessInfo.getDestinationProps());
-                                                if (CollectionUtils.isNotEmpty(fmExtNotes))
-                                                {
-                                                    caseDetails.getNotes().addAll(fmExtNotes);
-                                                }
-
-                                                // Filter by External Note Type(s) only
-                                                List<TY_NotesDetails> notesExternal = caseDetails.getNotes().stream()
-                                                        .filter(n -> appNoteTypes.contains(n.getNoteType()))
-                                                        .collect(Collectors.toList());
-
-                                                if (CollectionUtils.isNotEmpty(notesExternal))
-                                                {
-
-                                                    Collections.sort(notesExternal, Comparator
-                                                            .comparing(TY_NotesDetails::getTimestamp).reversed());
-                                                    caseDetails.setNotes(notesExternal);
-                                                }
-
+                                                caseDetails.getNotes().addAll(fmExtNotes);
                                             }
+
+                                            // Filter by External Note Type(s) only
+                                            List<TY_NotesDetails> notesExternal = caseDetails.getNotes().stream()
+                                                    .filter(n -> appNoteTypes.contains(n.getNoteType()))
+                                                    .collect(Collectors.toList());
+
+                                            if (CollectionUtils.isNotEmpty(notesExternal))
+                                            {
+
+                                                Collections.sort(notesExternal,
+                                                        Comparator.comparing(TY_NotesDetails::getTimestamp).reversed());
+                                                caseDetails.setNotes(notesExternal);
+                                            }
+
                                         }
                                     }
                                 }
-
                             }
 
                             if (attFetchSrv != null && rlConfig.isAllowPrevAttDL())

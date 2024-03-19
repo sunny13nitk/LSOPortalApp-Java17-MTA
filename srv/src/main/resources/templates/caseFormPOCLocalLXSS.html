@@ -363,8 +363,9 @@
                      </div>
 
                      <p id="chars-counter" style="margin-top: -1px">You enter 0 char(s)</p>
-                     <textarea data-role="textarea" data-prepend="<span class='mif-leanpub mif-3x'></span>"
-                        data-cls-prepend="bg-light" th:field="*{description}" data-chars-counter="#chars-counter"
+                     <textarea data-role="textarea" th:unescaped="true"
+                        data-prepend="<span class='mif-leanpub mif-3x'></span>" data-cls-prepend="bg-light"
+                        th:field="*{description}" data-chars-counter="#chars-counter"
                         data-chars-counter-template="You enter $1 char(s)"
                         data-clear-button-icon="<span class='mif-cross fg-black'></span>">
                      </textarea>

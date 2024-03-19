@@ -3931,8 +3931,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
     }
 
     @Override
-    public List<TY_NotesDetails> getFormattedExternalNotes4Case(String caseId, String extNoteType,
-            TY_DestinationProps desProps) throws EX_ESMAPI, IOException
+    public List<TY_NotesDetails> getFormattedNotes4Case(String caseId, TY_DestinationProps desProps)
+            throws EX_ESMAPI, IOException
     {
         List<TY_NotesDetails> formattedExternalNotes = new ArrayList<TY_NotesDetails>();
         if (StringUtils.hasText(caseId))
@@ -3949,7 +3949,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                 try
                 {
                     urlLink = StringsUtility.replaceURLwithParams(srvCloudUrls.getNotesReadUrl(), new String[]
-                    { caseId, extNoteType }, GC_Constants.gc_UrlReplParam);
+                    { caseId }, GC_Constants.gc_UrlReplParam);
 
                     if (StringUtils.hasText(urlLink))
                     {

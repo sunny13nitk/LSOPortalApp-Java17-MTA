@@ -3254,92 +3254,6 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                                         caseDetails.setETag(eTag);
                                         caseDetails.setNotes(new ArrayList<TY_NotesDetails>());
 
-                                        // Add Description
-                                        JsonNode descNode = rootNode.at("/description");
-                                        if (descNode != null && descNode.size() > 0)
-                                        {
-                                            log.info("Desc for Case ID : " + caseId + " bound..");
-
-                                            Iterator<String> fieldNamesDesc = descNode.fieldNames();
-                                            String content = null, noteType = null, userCreate = null, timestamp = null,
-                                                    id = null, noteId = null;
-                                            OffsetDateTime odt = null;
-                                            boolean agentNote = false;
-                                            while (fieldNamesDesc.hasNext())
-                                            {
-                                                String descFieldName = fieldNamesDesc.next();
-                                                if (descFieldName.equals("id"))
-                                                {
-                                                    id = descNode.get(descFieldName).asText();
-                                                }
-
-                                                if (descFieldName.equals("noteId"))
-                                                {
-                                                    noteId = descNode.get(descFieldName).asText();
-                                                }
-
-                                                if (descFieldName.equals("content"))
-                                                {
-                                                    content = descNode.get(descFieldName).asText();
-                                                }
-
-                                                if (descFieldName.equals("noteType"))
-                                                {
-                                                    noteType = descNode.get(descFieldName).asText();
-                                                }
-
-                                                if (descFieldName.equals("adminData"))
-                                                {
-                                                    // log.info("Inside Reporter: " );
-
-                                                    JsonNode admEnt = descNode.path("adminData");
-                                                    if (admEnt != null)
-                                                    {
-                                                        // log.info("Reporter Node Bound");
-
-                                                        Iterator<String> fieldNamesAdm = admEnt.fieldNames();
-                                                        while (fieldNamesAdm.hasNext())
-                                                        {
-                                                            String admFieldName = fieldNamesAdm.next();
-                                                            if (admFieldName.equals("createdOn"))
-                                                            {
-                                                                if (StringUtils
-                                                                        .hasText(admEnt.get(admFieldName).asText()))
-                                                                {
-
-                                                                    timestamp = admEnt.get(admFieldName).asText();
-                                                                    // Parse the date-time string into OffsetDateTime
-                                                                    odt = OffsetDateTime.parse(timestamp);
-                                                                }
-                                                            }
-
-                                                            if (admFieldName.equals("createdByName"))
-                                                            {
-
-                                                                if (StringUtils
-                                                                        .hasText(admEnt.get(admFieldName).asText()))
-                                                                {
-                                                                    userCreate = admEnt.get(admFieldName).asText();
-                                                                    if (!userCreate
-                                                                            .startsWith(rlConfig.getTechUserRegex()))
-                                                                    {
-                                                                        agentNote = true;
-                                                                    }
-                                                                }
-                                                            }
-
-                                                        }
-
-                                                    }
-                                                }
-
-                                            }
-                                            TY_NotesDetails newNote = new TY_NotesDetails(noteType, id, noteId, odt,
-                                                    userCreate, content, agentNote);
-                                            caseDetails.getNotes().add(newNote);
-
-                                        }
-
                                     }
                                 }
 
@@ -4189,8 +4103,8 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
     }
 
     @Override
-    public List<TY_NotesDetails> getFormattedExternalNotes4Case(String caseId, String extNoteType,
-            TY_DestinationProps desProps) throws EX_ESMAPI, IOException
+    public List<TY_NotesDetails> getFormattedNotes4Case(String caseId, TY_DestinationProps desProps)
+            throws EX_ESMAPI, IOException
     {
         List<TY_NotesDetails> formattedExternalNotes = new ArrayList<TY_NotesDetails>();
         if (StringUtils.hasText(caseId))
@@ -4203,11 +4117,11 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
             if (StringUtils.hasText(caseId) && StringUtils.hasText(dS.getNotesReadUrlPathString()))
 
             {
-                log.info("Fetching External Notes for Case ID : " + caseId);
+                log.info("Fetching External & Default Notes for Case ID : " + caseId);
                 try
                 {
                     urlLink = StringsUtility.replaceURLwithParams(dS.getNotesReadUrlPathString(), new String[]
-                    { caseId, extNoteType }, GC_Constants.gc_UrlReplParam);
+                    { caseId }, GC_Constants.gc_UrlReplParam);
 
                     if (StringUtils.hasText(urlLink))
                     {
@@ -4242,7 +4156,8 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                             JsonNode rootNode = jsonNode.path("value");
                             if (rootNode != null && rootNode.isArray() && rootNode.size() > 0)
                             {
-                                log.info("# External Notes for Case ID : " + caseId + " bound.. -  " + rootNode.size());
+                                log.info("# Notes (External & Default) for Case ID : " + caseId + " bound.. -  "
+                                        + rootNode.size());
                                 for (JsonNode arrayItem : rootNode)
                                 {
                                     String content = null, noteType = null, userCreate = null, timestamp = null,

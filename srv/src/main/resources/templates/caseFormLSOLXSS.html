@@ -315,8 +315,7 @@
                <h6 style="color: #54627B; margin-left: 10px">Create new Case.
                   <span style="color: #B1365B" th:text="${caseTypeStr}"></span> !
                </h6>
-               <form th:object="${caseForm}" enctype="multipart/form-data" th:action="@{/post/saveCase}"
-                  method="post">
+               <form th:object="${caseForm}" enctype="multipart/form-data" th:action="@{/post/saveCase}" method="post">
                   <input type="hidden" th:field="*{accId}" />
                   <input type="hidden" th:field="*{caseTxnType}" />
                   <div class="colspan-9 offset-1" style="margin-top: 15px; margin-bottom: 10px;">
@@ -366,8 +365,8 @@
 
                      <p id="chars-counter" style="margin-top: -1px">You enter 0 char(s)</p>
                      <textarea data-role="textarea" data-prepend="<span class='mif-leanpub mif-3x'></span>"
-                        data-cls-prepend="bg-light" th:field="*{description}" data-chars-counter="#chars-counter"
-                        data-chars-counter-template="You enter $1 char(s)"
+                        data-cls-prepend="bg-light" th:unescaped="true" th:field="*{description}"
+                        data-chars-counter="#chars-counter" data-chars-counter-template="You enter $1 char(s)"
                         data-clear-button-icon="<span class='mif-cross fg-black'></span>">
                      </textarea>
 
