@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
 import com.sap.cap.esmapi.utilities.pojos.TY_DestinationsSuffix;
-
+//Dedstinations Suffixes
 @Configuration
 @PropertySources(
 { @PropertySource("classpath:DestinationsSuffixes.properties") })
