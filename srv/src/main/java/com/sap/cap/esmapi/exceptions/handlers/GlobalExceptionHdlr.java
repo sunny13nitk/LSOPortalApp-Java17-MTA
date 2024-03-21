@@ -49,7 +49,6 @@ public class GlobalExceptionHdlr
 		mv.setViewName("sessionexpire");
 		log.error("Exception of Type 'EX_SessionExpired' occured with error details as : " + ex.getLocalizedMessage());
 		log.error(ex.getStackTrace().toString());
-		mv.addObject("sessionexpire", ex.getMessage());
 		return mv;
 	}
 
