@@ -1387,6 +1387,11 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                 }
             }
 
+            else
+            {
+                log.error("Session Expired : No Cases bound for User in Session");
+            }
+
         }
 
         return caseEditForm;

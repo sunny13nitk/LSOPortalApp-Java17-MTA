@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sap.cap.esmapi.events.event.EV_LogMessage;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
@@ -36,9 +35,9 @@ public class GlobalExceptionHdlr
 	{
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("error");
-		log.error(ex.getLocalizedMessage());
+		log.error("Exception of Type 'EX_ESMAPI' occured with error details as : " + ex.getLocalizedMessage());
 		log.error(ex.getStackTrace().toString());
-		mv.addObject("formError", ex.getLocalizedMessage());
+		mv.addObject("formError", ex.getMessage());
 		return mv;
 	}
 
