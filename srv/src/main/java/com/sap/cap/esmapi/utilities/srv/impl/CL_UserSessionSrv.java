@@ -33,6 +33,7 @@ import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatalogSrv;
 import com.sap.cap.esmapi.events.event.EV_LogMessage;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
+import com.sap.cap.esmapi.exceptions.EX_SessionExpired;
 import com.sap.cap.esmapi.hana.logging.srv.intf.IF_HANALoggingSrv;
 import com.sap.cap.esmapi.status.srv.intf.IF_StatusSrv;
 import com.sap.cap.esmapi.ui.pojos.TY_Attachment;
@@ -678,6 +679,11 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
 
         boolean withinRateLimit = true;
 
+        if (userSessInfo == null)
+        {
+            throw new EX_SessionExpired("User Session expired due to Inactivity. Please Sign In to Proceed!");
+        }
+
         // Rate Config Specified
         if (rlConfig != null)
         {
@@ -756,6 +762,11 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
 
         boolean withinRateLimit = true;
 
+        if (userSessInfo == null)
+        {
+            throw new EX_SessionExpired("User Session expired due to Inactivity. Please Sign In to Proceed!");
+        }
+
         // Rate Config Specified
         if (rlConfig != null)
         {
@@ -818,6 +829,10 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
     public boolean isCaseFormValid()
     {
         boolean isValid = true;
+        if (userSessInfo == null)
+        {
+            throw new EX_SessionExpired("User Session expired due to Inactivity. Please Sign In to Proceed!");
+        }
 
         // Get the Latest Form Submission from Session and Validate
         if (userSessInfo.getCurrentForm4Submission() != null && catalogSrv != null
@@ -1230,6 +1245,11 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
     public List<TY_CaseESS> getCases4User4mSession()
     {
 
+        if (userSessInfo == null)
+        {
+            throw new EX_SessionExpired("User Session expired due to Inactivity. Please Sign In to Proceed!");
+        }
+
         if (CollectionUtils.isNotEmpty(userSessInfo.getCases()))
         {
             log.info("# Cases returned for User From Session : " + userSessInfo.getCases().size());
@@ -1242,6 +1262,11 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
     @Override
     public void updateCases4SubmissionIds() throws EX_ESMAPI
     {
+        if (userSessInfo == null)
+        {
+            throw new EX_SessionExpired("User Session expired due to Inactivity. Please Sign In to Proceed!");
+        }
+
         if (hanaLogSrv != null && CollectionUtils.isNotEmpty(userSessInfo.getSubmissionIDs()))
         {
             // Get the Logs for the Object IDS - Sumbission GUIDS
