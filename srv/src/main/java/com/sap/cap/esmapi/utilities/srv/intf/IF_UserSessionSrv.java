@@ -142,4 +142,10 @@ public interface IF_UserSessionSrv
 
     public TY_DestinationProps getDestinationDetails4mUserSession();
 
+    public void setSubmissionActive();
+
+    public void clearActiveSubmission();
+
+    public boolean isCurrentSubmissionActive();
+
 }

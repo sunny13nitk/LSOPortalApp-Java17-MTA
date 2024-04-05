@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -63,20 +62,15 @@ public class LSOController
     private IF_VHelpLOBUIModelSrv vhlpUISrv;
 
     @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-
-    @Autowired
     private IF_SessAttachmentsService attSrv;
 
     @Autowired
     private TY_RLConfig rlConfig;
 
     private final String caseListVWRedirect = "redirect:/lso/";
-    private final String caseFormErrorRedirect = "redirect:/lso/errForm/";
     private final String caseFormViewLXSS = "caseFormLSOLXSS";
     private final String caseFormReplyLXSS = "caseFormReplyLSOLXSS";
     private final String lsoCaseListViewLXSS = "lsoCasesListViewLXSS";
-    private final String caseFormReplyErrorRedirect = "redirect:/lso/errCaseReply/";
 
     @GetMapping("/")
     public String showCasesList(@AuthenticationPrincipal Token token, Model model)
@@ -126,6 +120,9 @@ public class LSOController
                                         // Even if No Cases - spl. for Newly Create Acc - to enable REfresh button
                                         model.addAttribute("sessMsgs", userSessSrv.getSessionMessages());
 
+                                        // Session Active Toast
+                                        model.addAttribute("submActive", userSessSrv.isCurrentSubmissionActive());
+
                                     }
 
                                     else
@@ -151,6 +148,7 @@ public class LSOController
     @GetMapping("/createCase/")
     public String showCaseAsyncForm(Model model)
     {
+        userSessSrv.clearActiveSubmission();
         String viewCaseForm = caseFormViewLXSS;
 
         if ((StringUtils.hasText(userSessSrv.getUserDetails4mSession().getAccountId())
@@ -239,6 +237,7 @@ public class LSOController
                 && !CollectionUtils.isEmpty(catgCusSrv.getCustomizations())
                 && userSessSrv.getCurrentForm4Submission() != null)
         {
+            userSessSrv.clearActiveSubmission();
 
             Optional<TY_CatgCusItem> cusItemO = catgCusSrv.getCustomizations().stream()
                     .filter(g -> g.getCaseTypeEnum().toString().equals(EnumCaseTypes.Learning.toString())).findFirst();
@@ -352,6 +351,7 @@ public class LSOController
     {
         if (StringUtils.hasText(fileName) && attSrv != null && userSessSrv != null)
         {
+            userSessSrv.clearActiveSubmission();
             if (attSrv.checkIFExists(fileName))
             {
                 attSrv.removeAttachmentByName(fileName);
@@ -426,6 +426,7 @@ public class LSOController
     {
         if (StringUtils.hasText(fileName) && attSrv != null && userSessSrv != null)
         {
+            userSessSrv.clearActiveSubmission();
             if (attSrv.checkIFExists(fileName))
             {
                 attSrv.removeAttachmentByName(fileName);
@@ -493,6 +494,7 @@ public class LSOController
     {
         if (userSessSrv != null)
         {
+            userSessSrv.clearActiveSubmission();
 
             if (userSessSrv.getCurrentReplyForm4Submission() != null && StringUtils.hasText(
                     userSessSrv.getCurrentReplyForm4Submission().getCaseReply().getCaseDetails().getCaseGuid()))
@@ -554,6 +556,7 @@ public class LSOController
     public String getCaseDetails(@PathVariable String caseID, Model model)
     {
         String viewName = caseFormReplyLXSS;
+        userSessSrv.clearActiveSubmission();
         log.info("Navigating to case with UUID : " + caseID);
         if (StringUtils.hasText(caseID))
         {

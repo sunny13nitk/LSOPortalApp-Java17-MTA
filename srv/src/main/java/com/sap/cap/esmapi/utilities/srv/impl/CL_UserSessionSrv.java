@@ -1579,6 +1579,79 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         return isValid;
     }
 
+    @Override
+    public TY_CaseEditFormAsync getCurrentReplyForm4Submission()
+    {
+        TY_CaseEditFormAsync currCaseReplyForm = null;
+        if (userSessInfo != null)
+        {
+            currCaseReplyForm = userSessInfo.getCurrentCaseReply();
+        }
+
+        return currCaseReplyForm;
+    }
+
+    @Override
+    public void setCaseFormB4Submission(TY_Case_Form caseForm)
+    {
+        this.userSessInfo.setCaseFormB4Subm(caseForm);
+    }
+
+    @Override
+    public TY_Case_Form getCaseFormB4Submission()
+    {
+        return userSessInfo.getCaseFormB4Subm();
+    }
+
+    @Override
+    public void setCaseEditFormB4Submission(TY_CaseEdit_Form caseEditForm)
+    {
+        this.userSessInfo.setCaseReplyFormB4Subm(caseEditForm);
+    }
+
+    @Override
+    public TY_CaseEdit_Form getCaseEditFormB4Submission()
+    {
+        return userSessInfo.getCaseReplyFormB4Subm();
+    }
+
+    @Override
+    public TY_DestinationProps getDestinationDetails4mUserSession()
+    {
+        return userSessInfo.getDestinationProps();
+    }
+
+    @Override
+    public void setSubmissionActive()
+    {
+        if (userSessInfo != null)
+        {
+            this.userSessInfo.setActiveSubmission(true);
+        }
+
+    }
+
+    @Override
+    public void clearActiveSubmission()
+    {
+        if (userSessInfo != null)
+        {
+            this.userSessInfo.setActiveSubmission(false);
+        }
+    }
+
+    @Override
+    public boolean isCurrentSubmissionActive()
+    {
+        boolean isActive = false;
+        if (userSessInfo != null)
+        {
+            isActive = this.userSessInfo.isActiveSubmission();
+        }
+
+        return isActive;
+    }
+
     private void handleCaseReplyError()
     {
         String msg = msgSrc.getMessage("ERR_CASE_PAYLOAD", new Object[]
@@ -1615,18 +1688,6 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         applicationEventPublisher.publishEvent(logMsgEvent);
 
         this.addFormErrors(msg);// For Form Display
-    }
-
-    @Override
-    public TY_CaseEditFormAsync getCurrentReplyForm4Submission()
-    {
-        TY_CaseEditFormAsync currCaseReplyForm = null;
-        if (userSessInfo != null)
-        {
-            currCaseReplyForm = userSessInfo.getCurrentCaseReply();
-        }
-
-        return currCaseReplyForm;
     }
 
     private void handleErrorCaseFetch(String caseID, Exception e)
@@ -1781,36 +1842,6 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         }
         // Should be handled Centrally via Aspect
         throw new EX_ESMAPI(msg);
-    }
-
-    @Override
-    public void setCaseFormB4Submission(TY_Case_Form caseForm)
-    {
-        this.userSessInfo.setCaseFormB4Subm(caseForm);
-    }
-
-    @Override
-    public TY_Case_Form getCaseFormB4Submission()
-    {
-        return userSessInfo.getCaseFormB4Subm();
-    }
-
-    @Override
-    public void setCaseEditFormB4Submission(TY_CaseEdit_Form caseEditForm)
-    {
-        this.userSessInfo.setCaseReplyFormB4Subm(caseEditForm);
-    }
-
-    @Override
-    public TY_CaseEdit_Form getCaseEditFormB4Submission()
-    {
-        return userSessInfo.getCaseReplyFormB4Subm();
-    }
-
-    @Override
-    public TY_DestinationProps getDestinationDetails4mUserSession()
-    {
-        return userSessInfo.getDestinationProps();
     }
 
 }

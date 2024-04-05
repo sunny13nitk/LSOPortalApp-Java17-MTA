@@ -79,7 +79,6 @@ public class LSOPostController
     private final String caseFormErrorRedirect = "redirect:/lso/errForm/";
     private final String caseFormViewLXSS = "caseFormLSOLXSS";
     private final String caseFormReplyLXSS = "caseFormReplyLSOLXSS";
-    private final String lsoCaseListViewLXSS = "lsoCasesListViewLXSS";
     private final String caseFormReplyErrorRedirect = "redirect:/lso/errCaseReply/";
 
     @PostMapping(value = "/saveCase", params = "action=saveCase")
@@ -87,6 +86,7 @@ public class LSOPostController
     {
 
         String viewName = caseListVWRedirect;
+        userSessSrv.clearActiveSubmission();
         if (caseForm != null && userSessSrv != null && userInfo.isAuthenticated())
         {
             if (userSessSrv.getUserDetails4mSession().isEmployee())
@@ -114,6 +114,7 @@ public class LSOPostController
                 caseFormAsync.setDesProps(userSessSrv.getDestinationDetails4mUserSession());
                 EV_CaseFormSubmit eventCaseSubmit = new EV_CaseFormSubmit(this, caseFormAsync);
                 applicationEventPublisher.publishEvent(eventCaseSubmit);
+                userSessSrv.setSubmissionActive();
             }
 
             log.info("Processing of Case Form - UI layer :Ends....");
@@ -307,7 +308,7 @@ public class LSOPostController
         String viewName = caseListVWRedirect;
         if (caseReplyForm != null && userSessSrv != null)
         {
-
+            userSessSrv.clearActiveSubmission();
             log.info("Processing of Case Reply Form - UI layer :Begins....");
 
             // Any Validation Error(s) on the Form or Submission not possible
@@ -327,6 +328,7 @@ public class LSOPostController
                 caseEditFormAsync.setDesProps(userSessSrv.getDestinationDetails4mUserSession());
                 EV_CaseReplySubmit eventCaseReplySubmit = new EV_CaseReplySubmit(this, caseEditFormAsync);
                 applicationEventPublisher.publishEvent(eventCaseReplySubmit);
+                userSessSrv.setSubmissionActive();
             }
 
             log.info("Processing of Case Form - UI layer :Ends....");

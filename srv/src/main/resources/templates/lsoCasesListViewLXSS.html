@@ -563,6 +563,7 @@
 
 
 
+   <div class="slotSubm" id="submToast" th:if="${submActive == true}"></div>
    <div class="slot" id="slot1" th:if="${rateLimitBreached == true}"></div>
    <newlxp-footer></newlxp-footer>
 
@@ -582,6 +583,19 @@
          $('div.slot').each(function (i, d)
          {
             runToast.call($(this));
+         });
+      });
+
+      function runSubmToast()
+      {
+         var toast = Metro.toast.create("Request submitted Successfully. Please use Alert(s) from Screen to view Details/Refresh to reload Cases List", null, 5000, "bg-green fg-white");
+      }
+
+      $(document).ready(function ()
+      {
+         $('div.slotSubm').each(function (i, d)
+         {
+            runSubmToast.call($(this));
          });
       });
 
