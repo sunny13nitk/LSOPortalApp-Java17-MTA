@@ -563,8 +563,10 @@
 
 
 
-   <div class="slotSubm" id="submToast" th:if="${submActive == true}"></div>
+
+
    <div class="slot" id="slot1" th:if="${rateLimitBreached == true}"></div>
+   <div class="slotSubm" id="submToast" th:if="${submActive == true}"></div>
    <newlxp-footer></newlxp-footer>
 
 
@@ -588,7 +590,9 @@
 
       function runSubmToast()
       {
-         var toast = Metro.toast.create("Request submitted Successfully. Please use Alert(s) from Screen to view Details/Refresh to reload Cases List", null, 5000, "bg-green fg-white");
+
+         var toast2 = Metro.toast
+            .create("Request submitted Successfully. Use Session Alert(s) button for details or Refresh button to reload Cases List", null, 5000, "bg-green fg-white");
       }
 
       $(document).ready(function ()
