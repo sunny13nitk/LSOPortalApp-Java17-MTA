@@ -1657,6 +1657,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
     {
         if (userSessInfo != null)
         {
+            log.info("#CSRF set in session");
             userSessInfo.setCsrfToken(csrfToken);
         }
     }

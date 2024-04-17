@@ -83,13 +83,6 @@ public class LSOController
             if (userInfo.isAuthenticated())
             {
 
-                if (csrftoken != null)
-                {
-                    log.info("#CSRF Token Bound with instance: " + csrftoken);
-                    log.info("#CSRF Token Value : " + csrftoken.getToken());
-                    userSessSrv.loadCsrf2Session(csrftoken.getToken());
-                }
-
                 // #AUTH checks to be done later after role collection(s) are published in
                 // CL_UserSessionSrv
                 TY_UserESS userDetails = new TY_UserESS();
@@ -101,6 +94,13 @@ public class LSOController
                         // check User and Account Bound
                         if (userSessSrv.getUserDetails4mSession() != null)
                         {
+                            if (csrftoken != null)
+                            {
+                                log.info("#CSRF Token Bound with instance: " + csrftoken);
+                                log.info("#CSRF Token Value : " + csrftoken.getToken());
+                                userSessSrv.loadCsrf2Session(csrftoken.getToken());
+                            }
+
                             log.info("User Details Bound from Session!");
                             if (StringUtils.hasText(userSessSrv.getUserDetails4mSession().getAccountId())
                                     || StringUtils.hasText(userSessSrv.getUserDetails4mSession().getEmployeeId()))
