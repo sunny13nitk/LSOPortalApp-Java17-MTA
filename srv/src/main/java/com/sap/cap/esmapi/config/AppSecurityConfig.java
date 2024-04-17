@@ -27,7 +27,9 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
+import org.springframework.security.web.session.SessionManagementFilter;
 
+import com.sap.cap.esmapi.config.AppSecurityConfig.MyCustomHybridTokenAuthenticationConverter;
 import com.sap.cap.esmapi.utilities.constants.GC_Constants;
 import com.sap.cloud.security.spring.config.IdentityServicesPropertySourceFactory;
 import com.sap.cloud.security.spring.token.authentication.AuthenticationToken;
@@ -89,6 +91,7 @@ public class AppSecurityConfig
                                 .requestMatchers("/*").authenticated()
                                 .anyRequest().denyAll())
                                 .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
+                                .addFilterBefore(new CsrfFilter(), SessionManagementFilter.class)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new MyCustomHybridTokenAuthenticationConverter())));
