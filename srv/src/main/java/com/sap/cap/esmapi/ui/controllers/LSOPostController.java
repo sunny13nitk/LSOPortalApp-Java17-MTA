@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCus;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
@@ -213,7 +214,8 @@ public class LSOPostController
     }
 
     @PostMapping(value = "/saveCase", params = "action=catgChange")
-    public String refreshCaseForm4Catg(@ModelAttribute("caseForm") TY_Case_Form caseForm, Model model)
+    public String refreshCaseForm4Catg(@RequestParam(name = "_csrf") String csrfToken,
+            @ModelAttribute("caseForm") TY_Case_Form caseForm, Model model)
     {
 
         String viewCaseForm = caseFormViewLXSS;
