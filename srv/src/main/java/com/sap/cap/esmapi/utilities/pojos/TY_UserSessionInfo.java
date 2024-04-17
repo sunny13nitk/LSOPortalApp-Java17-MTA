@@ -22,6 +22,7 @@ public class TY_UserSessionInfo
 {
     private Map<String, String> tokenDetails = new HashMap<>();
     private TY_UserDetails userDetails;
+    private String csrfToken;
     private TY_FormSubmissions formSubmissions = new TY_FormSubmissions();
     private TY_CaseFormAsync currentForm4Submission;
     private List<String> messages; // Cases ESS List Messages only - New Cases Created

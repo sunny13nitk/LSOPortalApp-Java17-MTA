@@ -116,6 +116,10 @@ public interface IF_UserSessionSrv
 
     public boolean isCaseReplyValid();
 
+    public void loadCsrf2Session(String csrfToken);
+
+    public String getCsrf4mSession();
+
     /*
      * Just to get the Flag rateLimitBreached from Session
      */

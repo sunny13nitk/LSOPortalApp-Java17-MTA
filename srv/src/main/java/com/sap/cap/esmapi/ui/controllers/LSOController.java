@@ -79,17 +79,16 @@ public class LSOController
 
         if (token != null && userInfo != null && userSessSrv != null)
         {
-
-            if (csrftoken != null)
-            {
-                log.info("CSRF Token Bound with instance: " + csrftoken);
-
-                log.info("Token Value : " + csrftoken.getToken());
-            }
-
             // Only Authenticated user via IDP
             if (userInfo.isAuthenticated())
             {
+
+                if (csrftoken != null)
+                {
+                    log.info("#CSRF Token Bound with instance: " + csrftoken);
+                    log.info("#CSRF Token Value : " + csrftoken.getToken());
+                    userSessSrv.loadCsrf2Session(csrftoken.getToken());
+                }
 
                 // #AUTH checks to be done later after role collection(s) are published in
                 // CL_UserSessionSrv
@@ -170,6 +169,8 @@ public class LSOController
             {
 
                 model.addAttribute("caseTypeStr", EnumCaseTypes.Learning.toString());
+                log.info("#CSRF derived from session to add to form : " + userSessSrv.getCsrf4mSession());
+                model.addAttribute("csrf", userSessSrv.getCsrf4mSession());
 
                 // Before case form Inititation we must check the Rate Limit for the Current
                 // User Session --current Form Submission added for Rate Limit Evaulation
