@@ -316,7 +316,6 @@
                   <span style="color: #B1365B" th:text="${caseTypeStr}"></span> !
                </h6>
                <form th:object="${caseForm}" enctype="multipart/form-data" th:action="@{/post/saveCase}" method="post">
-                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${csrf}" />
                   <input type="hidden" th:field="*{accId}" />
                   <input type="hidden" th:field="*{caseTxnType}" />
                   <div class="colspan-9 offset-1" style="margin-top: 15px; margin-bottom: 10px;">
