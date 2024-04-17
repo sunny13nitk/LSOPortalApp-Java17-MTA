@@ -7,6 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -73,11 +74,16 @@ public class LSOController
     private final String lsoCaseListViewLXSS = "lsoCasesListViewLXSS";
 
     @GetMapping("/")
-    public String showCasesList(@AuthenticationPrincipal Token token, Model model)
+    public String showCasesList(@AuthenticationPrincipal Token token, CsrfToken csrftoken, Model model)
     {
 
         if (token != null && userInfo != null && userSessSrv != null)
         {
+
+            if (csrftoken != null)
+            {
+                log.info("CSRF Token : " + csrftoken);
+            }
 
             // Only Authenticated user via IDP
             if (userInfo.isAuthenticated())

@@ -91,7 +91,6 @@ public class AppSecurityConfig
                                 .requestMatchers("/*").authenticated()
                                 .anyRequest().denyAll())
                                 .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
-                                .addFilterBefore(new CsrfFilter(), SessionManagementFilter.class)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new MyCustomHybridTokenAuthenticationConverter())));
