@@ -407,6 +407,7 @@
                   <input type="hidden" th:field="*{caseDetails.status}" />
                   <input type="hidden" th:field="*{caseDetails.description}" />
                   <input type="hidden" th:field="*{caseDetails.eTag}" />
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                   <!-- <input type="hidden" th:field="*{caseDetails.statusTransitionCFG}" /> -->
                   <!-- Hidden Fields - Carried over in Form to Controller -->
