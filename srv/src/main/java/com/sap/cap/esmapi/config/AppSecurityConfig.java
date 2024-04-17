@@ -23,6 +23,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 
@@ -86,6 +88,7 @@ public class AppSecurityConfig
                                 .requestMatchers("/post/**").hasAnyAuthority(GC_Constants.gc_role_employee_lso, GC_Constants.gc_role_contractor_lso)
                                 .requestMatchers("/*").authenticated()
                                 .anyRequest().denyAll())
+                                .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new MyCustomHybridTokenAuthenticationConverter())));
@@ -94,6 +97,18 @@ public class AppSecurityConfig
         return http.build();
 
     }
+
+
+    // Configure the CSRF token repository 
+    private CsrfTokenRepository csrfTokenRepository() 
+    { 
+        // Create a new HttpSessionCsrfTokenRepository 
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository(); 
+        // Set the session attribute name for the CSRF token 
+        repository.setSessionAttributeName("_csrf"); 
+        // Return the repository 
+        return repository; 
+    } 
 
     /**
      * Workaround for hybrid use case until Cloud Authorization Service is globally
