@@ -82,7 +82,9 @@ public class LSOController
 
             if (csrftoken != null)
             {
-                log.info("CSRF Token : " + csrftoken);
+                log.info("CSRF Token Bound with instance: " + csrftoken);
+
+                log.info("Token Value : " + csrftoken.getToken());
             }
 
             // Only Authenticated user via IDP
