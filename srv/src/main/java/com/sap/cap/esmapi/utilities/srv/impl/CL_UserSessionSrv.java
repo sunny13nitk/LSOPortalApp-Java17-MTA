@@ -1652,28 +1652,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         return isActive;
     }
 
-    @Override
-    public void loadCsrf2Session(String csrfToken)
-    {
-        if (userSessInfo != null)
-        {
-            log.info("#CSRF set in session");
-            userSessInfo.setCsrfToken(csrfToken);
-        }
-    }
-
-    @Override
-    public String getCsrf4mSession()
-    {
-        String csrFToken = null;
-        if (userSessInfo != null)
-        {
-            csrFToken = userSessInfo.getCsrfToken();
-        }
-
-        return csrFToken;
-    }
-
+   
     private void handleCaseReplyError()
     {
         String msg = msgSrc.getMessage("ERR_CASE_PAYLOAD", new Object[]

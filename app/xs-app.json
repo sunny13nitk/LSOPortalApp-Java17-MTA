@@ -14,7 +14,8 @@
       "target": "/post",
       "destination": "srv-api",
       "authenticationType": "xsuaa",
-      "cacheControl": "no-cache, no-store, must-revalidate"
+      "cacheControl": "no-cache, no-store, must-revalidate",
+      "csrfProtection": false
     },
     {
       "source": "^/logout",
