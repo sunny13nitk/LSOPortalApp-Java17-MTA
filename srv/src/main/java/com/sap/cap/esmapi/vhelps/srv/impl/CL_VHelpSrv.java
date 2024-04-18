@@ -171,6 +171,8 @@ public class CL_VHelpSrv implements IF_VHelpSrv
                                     .filter(f -> f.getLob().name().equals(lob.name())).findFirst();
                             if (vHlpLobO.isPresent())
                             {
+                                // sort Vhelps in Ascending order by default
+                                Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
                                 vHlpLobO.get().getFldVals().add(new TY_FldVals(fieldName, vhlpDDLB));
                             }
                             else
@@ -193,15 +195,6 @@ public class CL_VHelpSrv implements IF_VHelpSrv
                 }
             }
         }
-
-        // // Sort All Value help(s) by Key Ascending
-        // if (vhlpDDLB != null)
-        // {
-        //     if (CollectionUtils.isNotEmpty(vhlpDDLB))
-        //     {
-        //         Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
-        //     }
-        // }
 
         return vhlpDDLB;
     }
