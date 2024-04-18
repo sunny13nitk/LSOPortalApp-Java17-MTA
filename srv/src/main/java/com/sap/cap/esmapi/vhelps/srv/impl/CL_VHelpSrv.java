@@ -2,6 +2,8 @@ package com.sap.cap.esmapi.vhelps.srv.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -71,7 +73,7 @@ public class CL_VHelpSrv implements IF_VHelpSrv
             else // LOBVhelp customization Bound and LOB(s) configured
             {
 
-                // Check for LOB First for whoch request is made
+                // Check for LOB First for which request is made
                 lobVhlpO = vhlpCus.getVHelpsCus().stream().filter(f -> f.getLOB().equals(lob.toString())).findFirst();
                 if (lobVhlpO.isPresent())
                 {
@@ -189,6 +191,15 @@ public class CL_VHelpSrv implements IF_VHelpSrv
                     }
 
                 }
+            }
+        }
+
+        // Sort All Value help(s) by Key Ascending
+        if (vhlpDDLB != null)
+        {
+            if (CollectionUtils.isNotEmpty(vhlpDDLB))
+            {
+                Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
             }
         }
 

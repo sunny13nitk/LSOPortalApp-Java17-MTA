@@ -775,18 +775,31 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                 // Current # Submissions more than or equals to # configurable - check
                 if (userSessInfo.getFormSubmissions().getFormSubmissions().size() >= rlConfig.getNumFormSubms())
                 {
+
+                    int numSubm, numSubmsWithinSlot = 0;
+
+                    numSubm = userSessInfo.getFormSubmissions().getFormSubmissions().size();
                     // Get Current Time Stamp
                     Timestamp currTS = Timestamp.from(Instant.now());
                     // Get Top N :latest Submissions since submissions are always appended
                     // chronologically
                     List<Timestamp> topNSubmList = new ArrayList<Timestamp>();
                     topNSubmList = userSessInfo.getFormSubmissions().getFormSubmissions();
-                    Collections.sort(topNSubmList, Collections.reverseOrder());
 
-                    // Compare the Time difference from the latest one
-                    long secsElapsedLastSubmit = (currTS.getTime() - topNSubmList.get(0).getTime()) / 1000;
-                    // Last Submission elapsed time less than
-                    if (secsElapsedLastSubmit < rlConfig.getIntvSecs())
+                    for (Timestamp submTimeStamp : topNSubmList)
+                    {
+                        // Compare the Time difference from the latest one
+                        long secsElapsedLastSubmit = (currTS.getTime() - submTimeStamp.getTime()) / 1000;
+                        if (secsElapsedLastSubmit < rlConfig.getIntvSecs())
+                        {
+                            numSubmsWithinSlot++;
+                        }
+                    }
+
+                    // Total Session Form Submissions
+                    // more than config allowed && all created within the same allowed configured
+                    // time slot
+                    if ((numSubmsWithinSlot >= numSubm) && (numSubm >= rlConfig.getNumFormSubms()))
                     {
                         withinRateLimit = false;
                         userSessInfo.setRateLimitBreached(true);
@@ -805,7 +818,6 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                         // Instantiate and Fire the Event
                         EV_LogMessage logMsgEvent = new EV_LogMessage(this, logMsg);
                         applicationEventPublisher.publishEvent(logMsgEvent);
-
                     }
                     else
                     {
@@ -1652,7 +1664,6 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         return isActive;
     }
 
-   
     private void handleCaseReplyError()
     {
         String msg = msgSrc.getMessage("ERR_CASE_PAYLOAD", new Object[]

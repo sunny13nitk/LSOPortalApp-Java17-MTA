@@ -323,9 +323,6 @@
                      <input class="alert metro-input input-large" type="text" data-role="input"
                         data-prepend="<span style = 'padding-top:7px' class='mif-event-available mif-3x'></span>"
                         title="" th:field="*{subject}" />
-                     <small class="text-muted">
-                        Enter Issue Main Description.
-                     </small>
                   </div>
 
                   <div class="colspan-9 offset-1" style="margin-top: 5px; margin-bottom: 10px"
@@ -341,7 +338,7 @@
                         </option>
                      </select>
                      <small class="text-muted">
-                        Select Service Category from dropdown and Hit Reload to Refresh Form for Chosen Category.
+                        Select service category and click the refresh button to adapt the form
                      </small>
                      <span>
                         <button id="refresh" style="margin: 3px;" class="button secondary cycle outline" type="submit"
@@ -351,7 +348,7 @@
                      </span>
                   </div>
 
-                  <div class="colspan-9 offset-1" style="margin-top: 35px; margin-bottom: 10px">
+                  <div class="colspan-9 offset-1" style="margin-top: 10px; margin-bottom: 10px">
                      <label>Description</label>
                      <div th:if="${caseForm.template != null}" style="padding-top: 15px; padding-bottom: 20px;">
                         <!-- Panel for Template(s) -->
@@ -363,14 +360,18 @@
                         </div>
                      </div>
 
-                     <p id="chars-counter" style="margin-top: -1px">You enter 0 char(s)</p>
-                     <textarea data-role="textarea" data-prepend="<span class='mif-leanpub mif-3x'></span>"
+                     <!-- <p id="chars-counter" style="margin-top: -1px">You enter 0 char(s)</p> -->
+                     <!-- <textarea data-role="textarea" data-prepend="<span class='mif-leanpub mif-3x'></span>"
                         data-cls-prepend="bg-light" th:unescaped="true" th:field="*{description}"
                         data-chars-counter="#chars-counter" data-chars-counter-template="You enter $1 char(s)"
                         data-clear-button-icon="<span class='mif-cross fg-black'></span>">
+                     </textarea> -->
+
+                     <textarea data-role="textarea" data-cls-prepend="bg-light" th:unescaped="true"
+                        th:field="*{description}" data-clear-button-icon="<span class='mif-cross fg-black'></span>">
                      </textarea>
 
-                     <small class="text-muted">Enter Issue Description in detail. </small>
+                     <!-- <small class="text-muted">Enter Issue Description in detail. </small> -->
                   </div>
 
                   <div class="colspan-9 offset-1" style="margin-top: 5px; margin-bottom: 10px"
@@ -400,9 +401,6 @@
                   </div>
 
                   <div class="colspan-9 offset-1" style="margin-top: 5px; margin-bottom: 10px">
-                     <label style="font-size: 1.1em; font-weight: bolder;">Attachment(s) - Choose the File and Upload to
-                        Attach to the Case</label>
-
                      <div class="row" style="margin-top: 10px;">
 
                         <div class="cell-10 flex-align-self-start">

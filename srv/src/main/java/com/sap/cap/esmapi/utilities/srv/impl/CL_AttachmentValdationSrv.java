@@ -101,8 +101,11 @@ public class CL_AttachmentValdationSrv implements IF_AttachmentValdationSrv
     {
 
         String msg;
+        // msg = msgSrc.getMessage("ERR_INVALID_ATT_TYPE", new Object[]
+        // { extnType, filename }, Locale.ENGLISH);
+
         msg = msgSrc.getMessage("ERR_INVALID_ATT_TYPE", new Object[]
-        { extnType, filename }, Locale.ENGLISH);
+        { extnType }, Locale.ENGLISH);
 
         log.error(msg);
 
