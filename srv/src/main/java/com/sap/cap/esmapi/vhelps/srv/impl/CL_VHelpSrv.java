@@ -194,14 +194,14 @@ public class CL_VHelpSrv implements IF_VHelpSrv
             }
         }
 
-        // Sort All Value help(s) by Key Ascending
-        if (vhlpDDLB != null)
-        {
-            if (CollectionUtils.isNotEmpty(vhlpDDLB))
-            {
-                Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
-            }
-        }
+        // // Sort All Value help(s) by Key Ascending
+        // if (vhlpDDLB != null)
+        // {
+        //     if (CollectionUtils.isNotEmpty(vhlpDDLB))
+        //     {
+        //         Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
+        //     }
+        // }
 
         return vhlpDDLB;
     }
