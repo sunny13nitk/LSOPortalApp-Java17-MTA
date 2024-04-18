@@ -122,6 +122,8 @@ public class CL_VHelpSrv implements IF_VHelpSrv
                         userSessionSrv.getDestinationDetails4mUserSession());
                 if (CollectionUtils.isNotEmpty(vhlpDDLB))
                 {
+                    // sort Vhelps in Ascending order by default
+                    Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
                     vhlpPool = new ArrayList<TY_LOBVHlpPool>();
                     TY_LOBVHlpPool lobVhlpPool = new TY_LOBVHlpPool(lob, new ArrayList<TY_FldVals>());
                     TY_FldVals fldVals = new TY_FldVals(fieldName, vhlpDDLB);
