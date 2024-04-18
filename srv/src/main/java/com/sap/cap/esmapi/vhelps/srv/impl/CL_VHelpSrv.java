@@ -165,14 +165,15 @@ public class CL_VHelpSrv implements IF_VHelpSrv
                                 userSessionSrv.getDestinationDetails4mUserSession());
                         if (CollectionUtils.isNotEmpty(vhlpDDLB))
                         {
+                            // sort Vhelps in Ascending order by default
+                            Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
                             // Get the LOB Vhelp
 
                             Optional<TY_LOBVHlpPool> vHlpLobO = vhlpPool.stream()
                                     .filter(f -> f.getLob().name().equals(lob.name())).findFirst();
                             if (vHlpLobO.isPresent())
                             {
-                                // sort Vhelps in Ascending order by default
-                                Collections.sort(vhlpDDLB, Comparator.comparing(TY_KeyValue::getKey));
+
                                 vHlpLobO.get().getFldVals().add(new TY_FldVals(fieldName, vhlpDDLB));
                             }
                             else
