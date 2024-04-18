@@ -108,6 +108,11 @@ public class LSOPostController
             {
                 // Fire Case Submission Event - To be processed Asyncronously
 
+                if (userSessSrv != null)
+                {
+                    log.info("User Bound in Session..");
+                }
+
                 TY_CaseFormAsync caseFormAsync = userSessSrv.getCurrentForm4Submission();
                 // External/Internal User Pass to Asynch Thread as Session Scoped Service would
                 // not be accessible in Asynch thread
@@ -165,6 +170,10 @@ public class LSOPostController
 
                 // Populate User Details
                 TY_UserESS userDetails = new TY_UserESS();
+                if (userSessSrv != null)
+                {
+                    log.info("User Bound in Session..");
+                }
                 userDetails.setUserDetails(userSessSrv.getUserDetails4mSession());
                 model.addAttribute("userInfo", userDetails);
 
