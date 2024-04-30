@@ -26,7 +26,7 @@ modules:
     requires:
       - name: lsossrv-xsuaa
       - name: lsossrv-hdi-container
-      - name: iESM-destination-services
+      - name: lsossrv-destination-services
 
   # HANA DB HDI Container Deployer
   - name: lsossrv-hana-db
@@ -80,7 +80,7 @@ resources:
       service: xsuaa
       service-plan: application
     type: org.cloudfoundry.managed-service
-  - name: iESM-destination-services
+  - name: lsossrv-destination-services
     parameters:
       service-plan: lite
       service: destination
