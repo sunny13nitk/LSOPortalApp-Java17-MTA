@@ -30,6 +30,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_RLConfig;
 import com.sap.cap.esmapi.utilities.pojos.TY_UserESS;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_SessAttachmentsService;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_UserSessionSrv;
+import com.sap.cap.esmapi.utilities.uimodel.intf.IF_CountryLanguageVHelpAdj;
 import com.sap.cap.esmapi.vhelps.srv.intf.IF_VHelpLOBUIModelSrv;
 import com.sap.cds.services.request.UserInfo;
 import com.sap.cloud.security.token.Token;
@@ -68,6 +69,9 @@ public class LSOController
     @Autowired
     private TY_RLConfig rlConfig;
 
+    @Autowired
+    private IF_CountryLanguageVHelpAdj coLaDDLBSrv;
+
     private final String caseListVWRedirect = "redirect:/lso/";
     private final String caseFormViewLXSS = "caseFormLSOLXSS";
     private final String caseFormReplyLXSS = "caseFormReplyLSOLXSS";
@@ -94,7 +98,6 @@ public class LSOController
                         // check User and Account Bound
                         if (userSessSrv.getUserDetails4mSession() != null)
                         {
-                            
 
                             log.info("User Details Bound from Session!");
                             if (StringUtils.hasText(userSessSrv.getUserDetails4mSession().getAccountId())
@@ -164,7 +167,7 @@ public class LSOController
             {
 
                 model.addAttribute("caseTypeStr", EnumCaseTypes.Learning.toString());
-              
+
                 // Before case form Inititation we must check the Rate Limit for the Current
                 // User Session --current Form Submission added for Rate Limit Evaulation
                 if (userSessSrv.isWithinRateLimit())
@@ -314,8 +317,8 @@ public class LSOController
 
                 if (vhlpUISrv != null)
                 {
-                    model.addAllAttributes(
-                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                    model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                 }
 
                 model.addAttribute("caseForm", caseForm);
@@ -401,8 +404,8 @@ public class LSOController
 
                     if (vhlpUISrv != null)
                     {
-                        model.addAllAttributes(
-                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                        model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                     }
 
                     model.addAttribute("caseForm", caseForm);

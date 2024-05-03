@@ -35,6 +35,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_RLConfig;
 import com.sap.cap.esmapi.utilities.pojos.TY_UserESS;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_SessAttachmentsService;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_UserSessionSrv;
+import com.sap.cap.esmapi.utilities.uimodel.intf.IF_CountryLanguageVHelpAdj;
 import com.sap.cap.esmapi.vhelps.srv.intf.IF_VHelpLOBUIModelSrv;
 import com.sap.cds.services.request.UserInfo;
 
@@ -75,6 +76,9 @@ public class LSOPostController
 
     @Autowired
     private TY_RLConfig rlConfig;
+
+    @Autowired
+    private IF_CountryLanguageVHelpAdj coLaDDLBSrv;
 
     private final String caseListVWRedirect = "redirect:/lso/";
     private final String caseFormErrorRedirect = "redirect:/lso/errForm/";
@@ -195,8 +199,8 @@ public class LSOPostController
 
                 if (vhlpUISrv != null)
                 {
-                    model.addAllAttributes(
-                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                    model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                 }
 
                 model.addAttribute("caseForm", caseForm);
@@ -278,8 +282,8 @@ public class LSOPostController
 
                     if (vhlpUISrv != null)
                     {
-                        model.addAllAttributes(
-                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                        model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                     }
 
                     // Case Form Model Set at last

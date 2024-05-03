@@ -39,6 +39,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_UserESS;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_SessAttachmentsService;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_UserSessionSrv;
 import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
+import com.sap.cap.esmapi.utilities.uimodel.intf.IF_CountryLanguageVHelpAdj;
 import com.sap.cap.esmapi.vhelps.srv.intf.IF_VHelpLOBUIModelSrv;
 
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,9 @@ public class POCLocalController
 
     @Autowired
     private TY_RLConfig rlConfig;
+
+    @Autowired
+    private IF_CountryLanguageVHelpAdj coLaDDLBSrv;
 
     // #TEST - Begin
     @Autowired
@@ -325,8 +329,12 @@ public class POCLocalController
 
                 if (vhlpUISrv != null)
                 {
-                    model.addAllAttributes(
-                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+
+                    model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
+                    // model.addAllAttributes(
+                    // vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning,
+                    // caseForm.getCatgDesc()));
                 }
 
                 model.addAttribute("caseForm", caseForm);
@@ -420,8 +428,8 @@ public class POCLocalController
 
                 if (vhlpUISrv != null)
                 {
-                    model.addAllAttributes(
-                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                    model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                            vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                 }
 
                 model.addAttribute("caseForm", caseForm);
@@ -508,12 +516,97 @@ public class POCLocalController
 
                     if (vhlpUISrv != null)
                     {
-                        model.addAllAttributes(
-                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                        model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                     }
 
+                    // Case Form Model Set at last
+                    model.addAttribute("caseForm", caseForm);
 
-                    
+                    if (attSrv != null)
+                    {
+                        if (CollectionUtils.isNotEmpty(attSrv.getAttachmentNames()))
+                        {
+                            model.addAttribute("attachments", attSrv.getAttachmentNames());
+                        }
+                    }
+
+                    // Attachment file Size
+                    model.addAttribute("attSize", rlConfig.getAllowedSizeAttachmentMB());
+                }
+                else
+                {
+
+                    throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASE_TYPE_NOCFG", new Object[]
+                    { EnumCaseTypes.Learning.toString() }, Locale.ENGLISH));
+                }
+
+            }
+
+        }
+
+        return viewCaseForm;
+
+    }
+
+    @PostMapping(value = "/saveCase", params = "action=languAdj")
+    public String adjustLanguage4Country(@ModelAttribute("caseForm") TY_Case_Form caseForm, Model model)
+    {
+
+        String viewCaseForm = caseFormView;
+        if (caseForm != null && userSessSrv != null)
+        {
+
+            // Normal Scenario - Catg. chosen Not relevant for Notes Template and/or
+            // additional fields
+
+            if ((StringUtils.hasText(userSessSrv.getUserDetails4mSession().getAccountId())
+                    || StringUtils.hasText(userSessSrv.getUserDetails4mSession().getEmployeeId()))
+                    && !CollectionUtils.isEmpty(catgCusSrv.getCustomizations()))
+            {
+
+                Optional<TY_CatgCusItem> cusItemO = catgCusSrv.getCustomizations().stream()
+                        .filter(g -> g.getCaseTypeEnum().toString().equals(EnumCaseTypes.Learning.toString()))
+                        .findFirst();
+                if (cusItemO.isPresent() && catgTreeSrv != null)
+                {
+
+                    model.addAttribute("caseTypeStr", EnumCaseTypes.Learning.toString());
+
+                    // Populate User Details
+                    TY_UserESS userDetails = new TY_UserESS();
+                    userDetails.setUserDetails(userSessSrv.getUserDetails4mSession());
+                    model.addAttribute("userInfo", userDetails);
+
+                    // clear Form errors on each refresh or a New Case form request
+                    if (CollectionUtils.isNotEmpty(userSessSrv.getFormErrors()))
+                    {
+                        userSessSrv.clearFormErrors();
+                    }
+
+                    // also Upload the Catg. Tree as per Case Type
+                    model.addAttribute("catgsList",
+                            catalogTreeSrv.getCaseCatgTree4LoB(EnumCaseTypes.Learning).getCategories());
+
+                    // Scan Current Catg for Templ. Load and or Additional Fields
+
+                    // Scan for Template Load
+                    TY_CatgTemplates catgTemplate = catalogTreeSrv.getTemplates4Catg(caseForm.getCatgDesc(),
+                            EnumCaseTypes.Learning);
+                    if (catgTemplate != null)
+                    {
+
+                        // Set Questionnaire for Category
+                        caseForm.setTemplate(catgTemplate.getQuestionnaire());
+
+                    }
+
+                    if (vhlpUISrv != null && coLaDDLBSrv != null)
+                    {
+                        model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
+                    }
+
                     // Case Form Model Set at last
                     model.addAttribute("caseForm", caseForm);
 
@@ -595,8 +688,8 @@ public class POCLocalController
 
                     if (vhlpUISrv != null)
                     {
-                        model.addAllAttributes(
-                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc()));
+                        model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                                vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning, caseForm.getCatgDesc())));
                     }
 
                     model.addAttribute("caseForm", caseForm);

@@ -2,7 +2,6 @@ package com.sap.cap.esmapi.config;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +25,8 @@ import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransI;
 import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransitions;
 import com.sap.cap.esmapi.vhelps.cus.TY_Catg_MandatoryFlds;
 import com.sap.cap.esmapi.vhelps.cus.TY_VHelpsRoot;
+import com.sap.cap.esmapi.vhelps.pojos.TY_CountryLangaugeMapping;
+import com.sap.cap.esmapi.vhelps.pojos.TY_CountryLangaugeMappingsList;
 import com.sap.cap.esmapi.vhelps.pojos.TY_MandatoryFlds_CatgsList;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class AppInitializrConfig
     private final String configCatgCountryMandatory = "/configCatg/Mandatory_Country_Catg.csv";
     private final String configCatgLanguageMandatory = "/configCatg/Mandatory_Language_Catg.csv";
     private final String configStatusTransition = "/configCatg/statusTransitions.csv";
+    private final String countryLanguMappings = "/configCatg/CountryLanguageMappings.csv";
     private final String configCatgRanks = "/configCatg/catgRanks.csv";
 
     @Autowired
@@ -256,6 +258,42 @@ public class AppInitializrConfig
         }
 
         return catgLangMandList;
+    }
+
+    @Bean
+    public TY_CountryLangaugeMappingsList loadCountryanguageMappings()
+    {
+        TY_CountryLangaugeMappingsList countryLanguMappingsList = null;
+
+        try
+        {
+
+            ClassPathResource classPathResource = new ClassPathResource(countryLanguMappings);
+            if (classPathResource != null)
+            {
+                Reader reader = new InputStreamReader(classPathResource.getInputStream());
+                if (reader != null)
+                {
+                    log.info("Resource Bound... ");
+                    List<TY_CountryLangaugeMapping> configs = new CsvToBeanBuilder(reader).withSkipLines(1)
+                            .withType(TY_CountryLangaugeMapping.class).build().parse();
+
+                    if (!CollectionUtils.isEmpty(configs))
+                    {
+                        log.info("Entries in Config. Found for Country and Language Mappings: " + configs.size());
+                        countryLanguMappingsList = new TY_CountryLangaugeMappingsList(configs);
+                    }
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASETYPE_CFG", new Object[]
+            { configPath, e.getLocalizedMessage() }, Locale.ENGLISH));
+        }
+
+        return countryLanguMappingsList;
     }
 
     @Bean
