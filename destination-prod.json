@@ -12,6 +12,7 @@
                     "ProxyType": "Internet",
                     "Type": "HTTP",
                     "URL": "https://newlxp-components-prod.cfapps.eu10.hana.ondemand.com/"
+                    
                   
                 }
             ]
