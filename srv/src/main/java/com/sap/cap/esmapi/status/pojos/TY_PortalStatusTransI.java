@@ -19,4 +19,6 @@ public class TY_PortalStatusTransI
     private String toStatus;
     @CsvBindByPosition(position = 3)
     private Boolean editAllowed;
+    @CsvBindByPosition(position = 4)
+    private Boolean confirmAllowed;
 }

@@ -51,6 +51,8 @@ import com.sap.cap.esmapi.catg.pojos.TY_CatalogItem;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCus;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
+import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransI;
+import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransitions;
 import com.sap.cap.esmapi.status.pojos.TY_StatusCfgItem;
 import com.sap.cap.esmapi.ui.pojos.TY_Attachment;
 import com.sap.cap.esmapi.utilities.StringsUtility;
@@ -100,6 +102,9 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
     @Autowired
     private MessageSource msgSrc;
+
+    @Autowired
+    private TY_PortalStatusTransitions statusTransitions;
 
     @Override
     public JsonNode getAllCases(TY_DestinationProps desProps) throws IOException
@@ -188,9 +193,9 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             {
                 JsonNode jsonNode = getAllCases(desProps);
 
-                if (jsonNode != null)
+                if (jsonNode != null && CollectionUtils.isNotEmpty(statusTransitions.getStatusTransitions()))
                 {
-
+                    List<TY_PortalStatusTransI> statusTransitionsList = statusTransitions.getStatusTransitions();
                     JsonNode rootNode = jsonNode.path("value");
                     if (rootNode != null)
                     {
@@ -218,6 +223,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                         String caseid = null, caseguid = null, caseType = null,
                                                 caseTypeDescription = null, subject = null, status = null,
                                                 createdOn = null, accountId = null, contactId = null, origin = null;
+
+                                        boolean canConfirm = false;
 
                                         // log.info("Cases Entity Bound - Reading Case...");
                                         Iterator<String> fieldNames = caseEnt.fieldNames();
@@ -274,7 +281,6 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                     subject = caseEnt.get(caseFieldName).asText();
                                                 }
                                             }
-
                                             if (caseFieldName.equals("statusDescription"))
                                             {
                                                 // log.info("Case Status Added : " +
@@ -282,6 +288,19 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                 if (StringUtils.hasText(caseEnt.get(caseFieldName).asText()))
                                                 {
                                                     status = caseEnt.get(caseFieldName).asText();
+                                                    if (StringUtils.hasText(status))
+                                                    {
+                                                        String locStatus = status;
+                                                        Optional<TY_PortalStatusTransI> transO = statusTransitionsList
+                                                                .stream()
+                                                                .filter(l -> l.getFromStatus().equals(locStatus))
+                                                                .findFirst();
+                                                        if (transO.isPresent())
+                                                        {
+                                                            canConfirm = transO.get().getConfirmAllowed();
+                                                        }
+                                                    }
+
                                                 }
                                             }
 
@@ -420,14 +439,14 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                                                 casesESSList.add(new TY_CaseESS(caseguid, caseid, caseType,
                                                         caseTypeDescription, subject, status, accountId, contactId,
-                                                        createdOn, date, dateFormatted, odt, origin));
+                                                        createdOn, date, dateFormatted, odt, origin, canConfirm));
 
                                             }
                                             else
                                             {
                                                 casesESSList.add(new TY_CaseESS(caseguid, caseid, caseType,
                                                         caseTypeDescription, subject, status, accountId, contactId,
-                                                        createdOn, null, null, null, origin));
+                                                        createdOn, null, null, null, origin, canConfirm));
                                             }
 
                                         }
@@ -2177,9 +2196,9 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                 JsonNode jsonNode = getAllCases(desProps);
 
-                if (jsonNode != null)
+                if (jsonNode != null && CollectionUtils.isNotEmpty(statusTransitions.getStatusTransitions()))
                 {
-
+                    List<TY_PortalStatusTransI> statusTransitionsList = statusTransitions.getStatusTransitions();
                     JsonNode rootNode = jsonNode.path("value");
                     if (rootNode != null)
                     {
@@ -2207,6 +2226,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                         String caseid = null, caseguid = null, caseType = null,
                                                 caseTypeDescription = null, subject = null, status = null,
                                                 createdOn = null, accountId = null, contactId = null, origin = null;
+                                        boolean canConfirm = false;
 
                                         // log.info("Cases Entity Bound - Reading Case...");
                                         Iterator<String> fieldNames = caseEnt.fieldNames();
@@ -2281,6 +2301,19 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                 if (StringUtils.hasText(caseEnt.get(caseFieldName).asText()))
                                                 {
                                                     status = caseEnt.get(caseFieldName).asText();
+                                                    if (StringUtils.hasText(status))
+                                                    {
+                                                        String locStatus = status;
+                                                        Optional<TY_PortalStatusTransI> transO = statusTransitionsList
+                                                                .stream()
+                                                                .filter(l -> l.getFromStatus().equals(locStatus))
+                                                                .findFirst();
+                                                        if (transO.isPresent())
+                                                        {
+                                                            canConfirm = transO.get().getConfirmAllowed();
+                                                        }
+                                                    }
+
                                                 }
                                             }
 
@@ -2409,14 +2442,14 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                                                 casesESSList.add(new TY_CaseESS(caseguid, caseid, caseType,
                                                         caseTypeDescription, subject, status, accountId, contactId,
-                                                        createdOn, date, dateFormatted, odt, origin));
+                                                        createdOn, date, dateFormatted, odt, origin, canConfirm));
 
                                             }
                                             else
                                             {
                                                 casesESSList.add(new TY_CaseESS(caseguid, caseid, caseType,
                                                         caseTypeDescription, subject, status, accountId, contactId,
-                                                        createdOn, null, null, null, origin));
+                                                        createdOn, null, null, null, origin, canConfirm));
                                             }
 
                                         }
@@ -2710,9 +2743,11 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                             ObjectMapper mapper = new ObjectMapper();
                             jsonNode = mapper.readTree(apiOutput);
 
-                            if (jsonNode != null)
+                            if (jsonNode != null
+                                    && CollectionUtils.isNotEmpty(statusTransitions.getStatusTransitions()))
                             {
-
+                                List<TY_PortalStatusTransI> statusTransitionsList = statusTransitions
+                                        .getStatusTransitions();
                                 JsonNode rootNode = jsonNode.path("value");
                                 if (rootNode != null)
                                 {
@@ -2741,6 +2776,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                             caseTypeDescription = null, subject = null, status = null,
                                                             createdOn = null, accountId = null, employeeId = null,
                                                             origin = null;
+
+                                                    boolean canConfirm = false;
 
                                                     // log.info("Cases Entity Bound - Reading Case...");
                                                     Iterator<String> fieldNames = caseEnt.fieldNames();
@@ -2823,6 +2860,19 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                                     .hasText(caseEnt.get(caseFieldName).asText()))
                                                             {
                                                                 status = caseEnt.get(caseFieldName).asText();
+                                                                if (StringUtils.hasText(status))
+                                                                {
+                                                                    String locStatus = status;
+                                                                    Optional<TY_PortalStatusTransI> transO = statusTransitionsList
+                                                                            .stream().filter(l -> l.getFromStatus()
+                                                                                    .equals(locStatus))
+                                                                            .findFirst();
+                                                                    if (transO.isPresent())
+                                                                    {
+                                                                        canConfirm = transO.get().getConfirmAllowed();
+                                                                    }
+                                                                }
+
                                                             }
                                                         }
 
@@ -2931,7 +2981,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                             casesByCaseType.add(new TY_CaseESS(caseguid, caseid,
                                                                     caseTypeVar, caseTypeDescription, subject, status,
                                                                     accountId, employeeId, createdOn, date,
-                                                                    dateFormatted, odt, origin));
+                                                                    dateFormatted, odt, origin, canConfirm));
 
                                                         }
                                                         else
@@ -2939,7 +2989,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                                             casesByCaseType.add(new TY_CaseESS(caseguid, caseid,
                                                                     caseTypeVar, caseTypeDescription, subject, status,
                                                                     accountId, employeeId, createdOn, null, null, null,
-                                                                    origin));
+                                                                    origin, canConfirm));
                                                         }
 
                                                     }

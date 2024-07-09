@@ -340,14 +340,14 @@ public class APIRestController
 
                                             casesESSList.add(new TY_CaseESS(caseguid, caseid, caseType,
                                                     caseTypeDescription, subject, status, accountId, contactId,
-                                                    createdOn, date, dateFormatted, odt, origin));
+                                                    createdOn, date, dateFormatted, odt, origin,false));
 
                                         }
                                         else
                                         {
                                             casesESSList.add(new TY_CaseESS(caseguid, caseid, caseType,
                                                     caseTypeDescription, subject, status, accountId, contactId,
-                                                    createdOn, null, null, null, origin));
+                                                    createdOn, null, null, null, origin,false));
                                         }
 
                                     }

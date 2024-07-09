@@ -27,4 +27,5 @@ public class TY_CaseESS
     private String formattedDate;
     private OffsetDateTime tsCreate;
     private String origin;
+    private boolean confirmAllowed;
 }
