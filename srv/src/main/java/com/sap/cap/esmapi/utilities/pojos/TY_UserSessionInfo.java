@@ -37,5 +37,6 @@ public class TY_UserSessionInfo
     private TY_CaseEdit_Form caseReplyFormB4Subm; // Temporary placeholder for CaseEditForm : toggle b/w POST/GET
     private TY_DestinationProps destinationProps; // Destination Properties
     private boolean activeSubmission; // Handle successful Submission - UI toast message on Cases List
+    private String qualtricsUrl; // Placeholder for Qualtrics Url
 
 }

@@ -620,15 +620,27 @@ public class LSOController
         return viewName;
     }
 
-
     @GetMapping("/confirmCase/{caseID}")
     public ModelAndView confirmCase(@PathVariable String caseID, Model model)
     {
-        if (StringUtils.hasText(caseID))
+
+        String svyUrl = null;
+        if (StringUtils.hasText(caseID) && userSessSrv != null)
         {
             log.info("Triggered Confirmation for case ID : " + caseID);
+            try
+            {
+                svyUrl = userSessSrv.getSurveyUrl4CaseId(caseID);
+                // Only now Proceed to Confirm the case
+            }
+            catch (Exception e)
+            {
+                throw new EX_ESMAPI("Exception Triggered while Confirming the Case Id : " + caseID + "Details : "
+                        + e.getLocalizedMessage());
+            }
+
         }
 
-        return new ModelAndView(new RedirectView("http://www.google.com"));
+        return new ModelAndView(new RedirectView(svyUrl));
     }
 }

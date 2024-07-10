@@ -34,5 +34,6 @@ public class TY_DestinationsSuffix
     private String dlAttPathString;
     private String destInternal;
     private String destExternal;
+    private String destQualtrics;
 
 }

@@ -148,4 +148,17 @@ public interface IF_UserSessionSrv
 
     public boolean isCurrentSubmissionActive();
 
+    // @formatter:off
+    /**
+     * Returns the Survey Url for the given Case Id
+     * - Ensures that the Case belongs to the Current User only who is triggering invocation
+     * - Utilizes session memory to get base Url 
+     * -- Only goes to Destination Service in case the Survey Base url is not loaded in session memory
+     * @param caseId
+     * @return
+     * @throws EX_ESMAPI
+     */
+     // @formatter:on
+    public String getSurveyUrl4CaseId(String caseId) throws EX_ESMAPI;
+
 }

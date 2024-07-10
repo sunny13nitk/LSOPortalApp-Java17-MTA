@@ -66,7 +66,9 @@ import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 import com.sap.cap.esmapi.vhelps.pojos.TY_KeyValue;
 import com.sap.cap.esmapi.vhelps.srv.intf.IF_VHelpLOBUIModelSrv;
 import com.sap.cds.services.request.UserInfo;
-import com.sap.cloud.security.token.AccessToken;
+import com.sap.cloud.sdk.cloudplatform.connectivity.Destination;
+import com.sap.cloud.sdk.cloudplatform.connectivity.DestinationAccessor;
+import com.sap.cloud.sdk.cloudplatform.connectivity.exception.DestinationAccessException;
 import com.sap.cloud.security.token.Token;
 import com.sap.cloud.security.token.TokenClaims;
 
@@ -1662,6 +1664,79 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         }
 
         return isActive;
+    }
+
+    @Override
+    public String getSurveyUrl4CaseId(String caseId) throws EX_ESMAPI
+    {
+        String svyUrl = null;
+        String cons_pattn = "\\|";
+        final String prop_URL = "URL";
+
+        if (StringUtils.hasText(caseId) && StringUtils.hasText(dS.getDestQualtrics()))
+        {
+
+            // Validate that the case belongs to User Only
+            if (CollectionUtils.isNotEmpty(getCases4User4mSession()))
+            {
+                Optional<TY_CaseESS> caseESSO = getCases4User4mSession().stream().filter(c -> c.getId().equals(caseId))
+                        .findFirst();
+                if (!caseESSO.isPresent())
+                {
+                    handleUnauthorizedCaseAccess(userSessInfo.getUserDetails().getUsAccEmpl().getUserId(), caseId);
+                }
+                else
+                {
+                    // First check for base Url in Session if loaded
+                    if (StringUtils.hasText(userSessInfo.getQualtricsUrl()))
+                    {
+                        log.info("Survey base Url loaded from session.. ");
+                        svyUrl = userSessInfo.getQualtricsUrl();
+                        svyUrl = svyUrl.replaceAll(cons_pattn, caseId);
+                    }
+                    else // Fetch BaseUrl from Destination accessor
+                    {
+
+                        try
+                        {
+
+                            log.info("Scanning for Destination : " + dS.getDestQualtrics());
+                            Destination dest = DestinationAccessor.getDestination(dS.getDestQualtrics());
+                            if (dest != null)
+                            {
+
+                                log.info("Qualtrics Destination Bound via Destination Accessor.");
+
+                                for (String prop : dest.getPropertyNames())
+                                {
+
+                                    if (prop.equals(prop_URL))
+                                    {
+                                        svyUrl = dest.get(prop).get().toString();
+                                        userSessInfo.setQualtricsUrl(svyUrl); // Load in Session Memory for later Use
+                                        svyUrl = svyUrl.replaceAll(cons_pattn, caseId);
+                                    }
+
+                                }
+
+                            }
+                        }
+                        catch (DestinationAccessException e)
+                        {
+                            log.error("Error Accessing Destination : " + e.getLocalizedMessage());
+                            String msg = msgSrc.getMessage("ERR_DESTINATION_ACCESS", new Object[]
+                            { dS.getDestQualtrics(), e.getLocalizedMessage() }, Locale.ENGLISH);
+                            throw new EX_ESMAPI(msg);
+
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+        return svyUrl;
     }
 
     private void handleCaseReplyError()
