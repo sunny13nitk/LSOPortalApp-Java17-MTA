@@ -159,6 +159,20 @@ public interface IF_UserSessionSrv
      * @throws EX_ESMAPI
      */
      // @formatter:on
-    public String getSurveyUrl4CaseId(String caseId) throws EX_ESMAPI;
+    public String getSurveyUrl4CaseId(String caseId) throws Exception;
+
+    /**
+     * Add the case Id to Session Confirmed Cases
+     */
+    public void addCaseToSessionConfirmedCases(String caseId);
+
+    /**
+     * Check that the case if it is already confirmed in the Current Session by the
+     * User
+     * 
+     * @param caseId - Case to be chacked for Confirmation
+     * @return - true in case the case is already confirmed in current Session
+     */
+    public boolean isCaseAlreadyConfirmed(String caseId);
 
 }

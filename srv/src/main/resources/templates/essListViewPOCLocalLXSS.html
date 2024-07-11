@@ -435,8 +435,8 @@
             </div>
          </div>
 
-         <div class="colspan-2" style="padding: 20px;" th:if="${sessMsgs != null}">
-            <a href="#" class="button alert outline cycle " data-role="hint" role="button"
+         <div class="colspan-2" style="padding: 20px;">
+            <a th:if="${sessMsgs != null}" href="#" class="button alert outline cycle " data-role="hint" role="button"
                onclick="$('#info-box').data('infobox').open()" data-hint-position="bottom" data-cls-hint="fg-black"
                data-hint-text="Session Alerts!">
                <span class="mif-bell" style="margin-left: 0px">
@@ -524,7 +524,7 @@
                         </a>
                         <a th:if="${case.confirmAllowed == true}" href="#" style="margin-left: 10px;"
                            th:href="@{'/poclocal/confirmCase/' + ${case.id}}" role="button" data-role="hint"
-                           target="_blank" data-hint-position="right" data-cls-hint="fg-black"
+                           target="_parent" data-hint-position="right" data-cls-hint="fg-black"
                            data-hint-text="Confirm Case">
                            Confirm
                         </a>

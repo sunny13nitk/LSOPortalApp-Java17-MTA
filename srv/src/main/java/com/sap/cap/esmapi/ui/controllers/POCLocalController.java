@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCus;
@@ -28,6 +29,7 @@ import com.sap.cap.esmapi.catg.srv.intf.IF_CatalogSrv;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatgSrv;
 import com.sap.cap.esmapi.events.event.EV_CaseFormSubmit;
 import com.sap.cap.esmapi.events.event.EV_CaseReplySubmit;
+import com.sap.cap.esmapi.exceptions.EX_CaseAlreadyConfirmed;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEditFormAsync;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEdit_Form;
@@ -91,6 +93,7 @@ public class POCLocalController
     private final String caseFormErrorRedirect = "redirect:/poclocal/errForm/";
     private final String caseFormView = "caseFormPOCLocalLXSS";
     private final String caseFormReply = "caseFormReplyPOCLocalLXSS";
+    private final String caseConfirmError = "alreadyConfirmed";
     private final String caseFormReplyErrorRedirect = "redirect:/poclocal/errCaseReply/";
 
     @GetMapping("/")
@@ -991,6 +994,7 @@ public class POCLocalController
         if (StringUtils.hasText(caseID) && userSessSrv != null)
         {
             log.info("Triggered Confirmation for case ID : " + caseID);
+
             try
             {
                 svyUrl = userSessSrv.getSurveyUrl4CaseId(caseID);
@@ -998,12 +1002,31 @@ public class POCLocalController
             }
             catch (Exception e)
             {
-                throw new EX_ESMAPI("Exception Triggered while Confirming the Case Id : " + caseID + "Details : "
-                        + e.getLocalizedMessage());
+                if (e instanceof EX_ESMAPI)
+                {
+                    throw new EX_ESMAPI("Exception Triggered while Confirming the Case Id : " + caseID + "Details : "
+                            + e.getLocalizedMessage());
+                }
+
+                if (e instanceof EX_CaseAlreadyConfirmed)
+                {
+                    userSessSrv.addSessionMessage(e.getMessage());
+                    model.addAttribute("message", e.getMessage());
+                    return new ModelAndView(new RedirectView("/poclocal/errConfirm"));
+
+                }
             }
 
         }
 
         return new ModelAndView(new RedirectView(svyUrl));
+    }
+
+    @GetMapping("/errorConfirm")
+    public String redirectWithUsingRedirectView(Model model, @ModelAttribute("message") String message)
+    {
+        model.addAttribute("message", message);
+        return caseConfirmError;
+
     }
 }

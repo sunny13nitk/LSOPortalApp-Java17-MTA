@@ -32,6 +32,7 @@ import com.sap.cap.esmapi.catg.pojos.TY_CatgCus;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatalogSrv;
 import com.sap.cap.esmapi.events.event.EV_LogMessage;
+import com.sap.cap.esmapi.exceptions.EX_CaseAlreadyConfirmed;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
 import com.sap.cap.esmapi.exceptions.EX_SessionExpired;
 import com.sap.cap.esmapi.hana.logging.srv.intf.IF_HANALoggingSrv;
@@ -1687,56 +1688,98 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                 }
                 else
                 {
-                    // First check for base Url in Session if loaded
-                    if (StringUtils.hasText(userSessInfo.getQualtricsUrl()))
+                    // check if the Case has been already confirmed by the User in Current Session
+                    if (this.isCaseAlreadyConfirmed(caseId))
                     {
-                        log.info("Survey base Url loaded from session.. ");
-                        svyUrl = userSessInfo.getQualtricsUrl();
-                        svyUrl = svyUrl.replaceAll(cons_pattn, caseId);
+                        throw new EX_CaseAlreadyConfirmed("Case : " + caseId + " is already Confirmed by the User...");
                     }
-                    else // Fetch BaseUrl from Destination accessor
-                    {
 
-                        try
+                    else
+                    {
+                        // Add Current CasId to Confirmed cases List already
+                        this.addCaseToSessionConfirmedCases(caseId);
+                        // First check for base Url in Session if loaded
+                        if (StringUtils.hasText(userSessInfo.getQualtricsUrl()))
+                        {
+                            log.info("Survey base Url loaded from session.. ");
+                            svyUrl = userSessInfo.getQualtricsUrl();
+                            svyUrl = svyUrl.replaceAll(cons_pattn, caseId);
+                        }
+                        else // Fetch BaseUrl from Destination accessor
                         {
 
-                            log.info("Scanning for Destination : " + dS.getDestQualtrics());
-                            Destination dest = DestinationAccessor.getDestination(dS.getDestQualtrics());
-                            if (dest != null)
+                            try
                             {
 
-                                log.info("Qualtrics Destination Bound via Destination Accessor.");
-
-                                for (String prop : dest.getPropertyNames())
+                                log.info("Scanning for Destination : " + dS.getDestQualtrics());
+                                Destination dest = DestinationAccessor.getDestination(dS.getDestQualtrics());
+                                if (dest != null)
                                 {
 
-                                    if (prop.equals(prop_URL))
+                                    log.info("Qualtrics Destination Bound via Destination Accessor.");
+
+                                    for (String prop : dest.getPropertyNames())
                                     {
-                                        svyUrl = dest.get(prop).get().toString();
-                                        userSessInfo.setQualtricsUrl(svyUrl); // Load in Session Memory for later Use
-                                        svyUrl = svyUrl.replaceAll(cons_pattn, caseId);
+
+                                        if (prop.equals(prop_URL))
+                                        {
+                                            svyUrl = dest.get(prop).get().toString();
+                                            userSessInfo.setQualtricsUrl(svyUrl); // Load in Session Memory for later
+                                                                                  // Use
+                                            svyUrl = svyUrl.replaceAll(cons_pattn, caseId);
+                                        }
+
                                     }
 
                                 }
+                            }
+                            catch (DestinationAccessException e)
+                            {
+                                log.error("Error Accessing Destination : " + e.getLocalizedMessage());
+                                String msg = msgSrc.getMessage("ERR_DESTINATION_ACCESS", new Object[]
+                                { dS.getDestQualtrics(), e.getLocalizedMessage() }, Locale.ENGLISH);
+                                throw new EX_ESMAPI(msg);
 
                             }
-                        }
-                        catch (DestinationAccessException e)
-                        {
-                            log.error("Error Accessing Destination : " + e.getLocalizedMessage());
-                            String msg = msgSrc.getMessage("ERR_DESTINATION_ACCESS", new Object[]
-                            { dS.getDestQualtrics(), e.getLocalizedMessage() }, Locale.ENGLISH);
-                            throw new EX_ESMAPI(msg);
 
                         }
-
                     }
+
                 }
 
             }
 
         }
         return svyUrl;
+    }
+
+    @Override
+    public void addCaseToSessionConfirmedCases(String caseId)
+    {
+        if (StringUtils.hasText(caseId))
+        {
+            if (this.userSessInfo.getCnfCasesSess() != null)
+            {
+                this.userSessInfo.getCnfCasesSess().add(caseId);
+            }
+        }
+    }
+
+    @Override
+    public boolean isCaseAlreadyConfirmed(String caseId)
+    {
+        boolean isCaseConfirmed = false;
+        if (CollectionUtils.isNotEmpty(this.userSessInfo.getCnfCasesSess()))
+        {
+            Optional<String> caseFoundO = this.userSessInfo.getCnfCasesSess().stream().filter(c -> c.equals(caseId))
+                    .findFirst();
+            if (caseFoundO.isPresent())
+            {
+                isCaseConfirmed = true;
+            }
+        }
+
+        return isCaseConfirmed;
     }
 
     private void handleCaseReplyError()
