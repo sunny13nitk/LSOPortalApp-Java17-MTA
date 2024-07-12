@@ -1691,13 +1691,18 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                     // check if the Case has been already confirmed by the User in Current Session
                     if (this.isCaseAlreadyConfirmed(caseId))
                     {
-                        throw new EX_CaseAlreadyConfirmed("Case : " + caseId + " is already Confirmed by the User...");
+                        String msg = msgSrc.getMessage("ERR_CASE_ALREADY_CONFIRMED", new Object[]
+                        { caseId }, Locale.ENGLISH);
+                        throw new EX_CaseAlreadyConfirmed(msg);
                     }
 
                     else
                     {
                         // Add Current CasId to Confirmed cases List already
                         this.addCaseToSessionConfirmedCases(caseId);
+                        // Also add message in the session
+                        this.addSessionMessage(msgSrc.getMessage("INFO_CASE_CONFIRMED", new Object[]
+                        { caseId }, Locale.ENGLISH));
                         // First check for base Url in Session if loaded
                         if (StringUtils.hasText(userSessInfo.getQualtricsUrl()))
                         {

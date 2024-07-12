@@ -988,7 +988,7 @@ public class POCLocalController
     }
 
     @GetMapping("/confirmCase/{caseID}")
-    public ModelAndView confirmCase(@PathVariable String caseID, Model model)
+    public ModelAndView confirmCase(@PathVariable String caseID, RedirectAttributes attributes)
     {
         String svyUrl = null;
         if (StringUtils.hasText(caseID) && userSessSrv != null)
@@ -1011,8 +1011,8 @@ public class POCLocalController
                 if (e instanceof EX_CaseAlreadyConfirmed)
                 {
                     userSessSrv.addSessionMessage(e.getMessage());
-                    model.addAttribute("message", e.getMessage());
-                    return new ModelAndView(new RedirectView("/poclocal/errConfirm"));
+                    attributes.addFlashAttribute("message", e.getMessage());
+                    return new ModelAndView(new RedirectView("/poclocal/errorConfirm"));
 
                 }
             }
