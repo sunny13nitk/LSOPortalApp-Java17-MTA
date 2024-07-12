@@ -1671,7 +1671,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
     public String getSurveyUrl4CaseId(String caseId) throws EX_ESMAPI
     {
         String svyUrl = null;
-        String cons_pattn = "\\|";
+        String cons_pattn = "\\~";
         final String prop_URL = "URL";
 
         if (StringUtils.hasText(caseId) && StringUtils.hasText(dS.getDestQualtrics()))
