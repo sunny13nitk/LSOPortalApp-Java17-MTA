@@ -7,7 +7,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -26,6 +25,7 @@ import com.sap.cap.esmapi.catg.srv.intf.IF_CatalogSrv;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatgSrv;
 import com.sap.cap.esmapi.exceptions.EX_CaseAlreadyConfirmed;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEdit_Form;
 import com.sap.cap.esmapi.ui.pojos.TY_Case_Form;
 import com.sap.cap.esmapi.utilities.enums.EnumCaseTypes;
@@ -629,6 +629,7 @@ public class LSOController
     {
 
         String svyUrl = null;
+        TY_CaseConfirmPOJO caseDetails;
         if (StringUtils.hasText(caseID) && userSessSrv != null)
         {
             log.info("Triggered Confirmation for case ID : " + caseID);
@@ -637,6 +638,17 @@ public class LSOController
             {
                 svyUrl = userSessSrv.getSurveyUrl4CaseId(caseID);
                 // Only now Proceed to Confirm the case
+                if (StringUtils.hasText(svyUrl))
+                {
+                    caseDetails = userSessSrv.getCaseDetails4Confirmation(caseID);
+                    if (caseDetails != null)
+                    {
+                        if (StringUtils.hasText(caseDetails.getETag()))
+                        {
+                            // Prepare Case Confirm Event and Trigger the same
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {

@@ -53,6 +53,7 @@ import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransI;
 import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransitions;
 import com.sap.cap.esmapi.status.pojos.TY_StatusCfgItem;
 import com.sap.cap.esmapi.ui.pojos.TY_Attachment;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.utilities.StringsUtility;
 import com.sap.cap.esmapi.utilities.constants.GC_Constants;
 import com.sap.cap.esmapi.utilities.enums.EnumCaseTypes;

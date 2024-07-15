@@ -38,6 +38,7 @@ import com.sap.cap.esmapi.exceptions.EX_SessionExpired;
 import com.sap.cap.esmapi.hana.logging.srv.intf.IF_HANALoggingSrv;
 import com.sap.cap.esmapi.status.srv.intf.IF_StatusSrv;
 import com.sap.cap.esmapi.ui.pojos.TY_Attachment;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEditFormAsync;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEdit_Form;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseFormAsync;
@@ -1785,6 +1786,53 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         }
 
         return isCaseConfirmed;
+    }
+
+    @Override
+    public TY_CaseConfirmPOJO getCaseDetails4Confirmation(String caseID) throws EX_ESMAPI
+    {
+        TY_CaseConfirmPOJO caseDetails = null;
+        if (StringUtils.hasText(caseID))
+        {
+            // Check if REquested Case belongs to the User
+            if (CollectionUtils.isNotEmpty(getCases4User4mSession()) && statusSrv != null)
+            {
+                Optional<TY_CaseESS> caseESSO = getCases4User4mSession().stream().filter(c -> c.getId().equals(caseID))
+                        .findFirst();
+                if (caseESSO.isPresent())
+                {
+                    TY_CaseESS caseESS = caseESSO.get();
+
+                    try
+                    {
+                        log.info("Getting Case details from Service Cloud...");
+                        TY_CaseDetails caseDetails4mAPI = srvCloudApiSrv.getCaseDetails4Case(caseESS.getGuid(),
+                                userSessInfo.getDestinationProps());
+                        // --- Filter by External Note Type(s) only
+                        if (caseDetails4mAPI != null)
+                        {
+                            caseDetails = new TY_CaseConfirmPOJO();
+                            caseDetails.setCaseType(caseESS.getCaseType());
+                            caseDetails.setCaseId(caseESS.getId());
+                            caseDetails.setStatus(caseESS.getStatusDesc());
+                            caseDetails.setOrigin(caseESS.getOrigin());
+                            caseDetails.setETag(caseDetails4mAPI.getETag());
+                            caseDetails
+                                    .setCnfStatusCode(statusSrv.getConfirmedStatusCode4CaseType(caseESS.getCaseType()));
+
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        handleErrorCaseFetch(caseID, e);
+                    }
+
+                }
+            }
+        }
+
+        return caseDetails;
     }
 
     private void handleCaseReplyError()

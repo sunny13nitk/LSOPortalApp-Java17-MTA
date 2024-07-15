@@ -10,6 +10,7 @@ import com.sap.cap.esmapi.catg.pojos.TY_CatalogItem;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
 import com.sap.cap.esmapi.status.pojos.TY_StatusCfgItem;
 import com.sap.cap.esmapi.ui.pojos.TY_Attachment;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.utilities.enums.EnumCaseTypes;
 import com.sap.cap.esmapi.utilities.pojos.TY_AttachmentResponse;
 import com.sap.cap.esmapi.utilities.pojos.TY_CaseCatalogCustomizing;
@@ -90,6 +91,8 @@ public interface IF_SrvCloudAPI
 
         public TY_CaseDetails getCaseDetails4Case(String caseId, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;
+
+       
 
         public List<TY_StatusCfgItem> getStatusCfg4StatusSchema(String StatusSchema, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;

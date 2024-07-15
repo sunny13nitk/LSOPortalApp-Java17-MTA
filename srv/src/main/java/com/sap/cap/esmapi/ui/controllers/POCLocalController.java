@@ -31,6 +31,7 @@ import com.sap.cap.esmapi.events.event.EV_CaseFormSubmit;
 import com.sap.cap.esmapi.events.event.EV_CaseReplySubmit;
 import com.sap.cap.esmapi.exceptions.EX_CaseAlreadyConfirmed;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEditFormAsync;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEdit_Form;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseFormAsync;
@@ -991,6 +992,7 @@ public class POCLocalController
     public ModelAndView confirmCase(@PathVariable String caseID, RedirectAttributes attributes)
     {
         String svyUrl = null;
+        TY_CaseConfirmPOJO caseDetails;
         if (StringUtils.hasText(caseID) && userSessSrv != null)
         {
             log.info("Triggered Confirmation for case ID : " + caseID);
@@ -999,6 +1001,17 @@ public class POCLocalController
             {
                 svyUrl = userSessSrv.getSurveyUrl4CaseId(caseID);
                 // Only now Proceed to Confirm the case
+                if (StringUtils.hasText(svyUrl))
+                {
+                    caseDetails = userSessSrv.getCaseDetails4Confirmation(caseID);
+                    if (caseDetails != null)
+                    {
+                        if (StringUtils.hasText(caseDetails.getETag()))
+                        {
+                            // Prepare Case Confirm Event and Trigger the same
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {

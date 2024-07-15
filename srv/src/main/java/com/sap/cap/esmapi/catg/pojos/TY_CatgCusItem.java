@@ -28,7 +28,9 @@ public class TY_CatgCusItem
     private String replyNoteType;
     @CsvBindByPosition(position = 6)
     private Boolean toplvlCatgOnly;
-     @CsvBindByPosition(position = 7)
+    @CsvBindByPosition(position = 7)
     private Boolean catgRankEnabled;
+    @CsvBindByPosition(position = 8)
+    private String confirmStatus;
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEditFormAsync;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseEdit_Form;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseFormAsync;
@@ -139,6 +140,16 @@ public interface IF_UserSessionSrv
      * Session
      */
     public TY_CaseEdit_Form getCaseDetails4Edit(String caseID) throws EX_ESMAPI;
+
+    /**
+     * Get Case Details for Case Confirmation
+     * 
+     * @param caseID - Case ID :The ID of the case --Includes check for the case
+     *               belonging to the User
+     * @return TY_CASEConfirmPOJO
+     * @throws EX_ESMAPI
+     */
+    public TY_CaseConfirmPOJO getCaseDetails4Confirmation(String caseID) throws EX_ESMAPI;
 
     public TY_DestinationProps getDestinationDetails4mUserSession();
 

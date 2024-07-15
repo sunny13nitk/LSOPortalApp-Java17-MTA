@@ -13,4 +13,6 @@ public interface IF_StatusSrv
 
     public TY_PortalStatusTransICode getPortalStatusTransition4CaseTypeandCaseStatus(String caseType, String caseStatus)
             throws EX_ESMAPI, IOException;
+
+    public String getConfirmedStatusCode4CaseType(String caseType) throws EX_ESMAPI, IOException;
 }

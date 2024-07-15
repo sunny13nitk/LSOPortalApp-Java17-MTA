@@ -136,6 +136,52 @@ public class CL_StatusSrv implements IF_StatusSrv
         return statTransCus;
     }
 
+    @Override
+    public String getConfirmedStatusCode4CaseType(String caseType) throws EX_ESMAPI, IOException
+    {
+        String cnfStatusCode = null;
+
+        if (StringUtils.hasText(caseType) && catgCus != null)
+        {
+            // Load Customizing for Case Type
+            Optional<TY_CatgCusItem> cusO = catgCus.getCustomizations().stream()
+                    .filter(c -> c.getCaseType().equalsIgnoreCase(caseType)).findFirst();
+            if (cusO.isPresent())
+            {
+                TY_CatgCusItem cus = cusO.get();
+                if (StringUtils.hasText(cus.getStatusSchema()) && StringUtils.hasText(cus.getConfirmStatus()))
+                {
+                    TY_StatusCfg statusCfg = this.getStatusCfg4CaseType(cus.getCaseTypeEnum());
+                    if (statusCfg != null)
+                    {
+                        if (CollectionUtils.isNotEmpty(statusCfg.getUserStatusAssignments()))
+                        {
+                            Optional<TY_StatusCfgItem> cfStatusO = statusCfg.getUserStatusAssignments().stream()
+                                    .filter(s -> s.getUserStatusDescription().equals(cus.getConfirmStatus()))
+                                    .findFirst();
+                            if (cfStatusO.isPresent())
+                            {
+                                cnfStatusCode = cfStatusO.get().getUserStatus();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // ERR_NO_SCHEMA_SPECIFIED= No Status Schema or Confirmed Status configured in
+                    // App Customization for Case Type - {0}.
+                    String msg = msgSrc.getMessage("ERR_NO_SCHEMA_SPECIFIED", new Object[]
+                    { caseType }, Locale.ENGLISH);
+                    log.error(msg);
+                    throw new EX_ESMAPI(msg);
+                }
+            }
+
+        }
+        return cnfStatusCode;
+
+    }
+
     private TY_StatusCfg fetchStatusCfg4CaseType(EnumCaseTypes caseType) throws EX_ESMAPI, IOException
     {
         TY_StatusCfg statusCfg = null;
@@ -164,6 +210,15 @@ public class CL_StatusSrv implements IF_StatusSrv
                         lobStatusCfgList.add(statusCfg);
                     }
 
+                }
+                else
+                {
+                    // ERR_NO_SCHEMA_SPECIFIED= No Status Schema configured in App Customization for
+                    // Case Type - {0}.
+                    String msg = msgSrc.getMessage("ERR_NO_SCHEMA_SPECIFIED", new Object[]
+                    { caseType }, Locale.ENGLISH);
+                    log.error(msg);
+                    throw new EX_ESMAPI(msg);
                 }
             }
         }
