@@ -55,6 +55,7 @@ import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransI;
 import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransitions;
 import com.sap.cap.esmapi.status.pojos.TY_StatusCfgItem;
 import com.sap.cap.esmapi.ui.pojos.TY_Attachment;
+import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
 import com.sap.cap.esmapi.utilities.StringsUtility;
 import com.sap.cap.esmapi.utilities.constants.GC_Constants;
 import com.sap.cap.esmapi.utilities.enums.EnumCaseTypes;
@@ -66,6 +67,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_CaseGuidId;
 import com.sap.cap.esmapi.utilities.pojos.TY_CasePatchInfo;
 import com.sap.cap.esmapi.utilities.pojos.TY_Case_Customer_SrvCloud;
 import com.sap.cap.esmapi.utilities.pojos.TY_Case_Employee_SrvCloud;
+import com.sap.cap.esmapi.utilities.pojos.TY_Case_SrvCloud_Confirm;
 import com.sap.cap.esmapi.utilities.pojos.TY_Case_SrvCloud_Reply;
 import com.sap.cap.esmapi.utilities.pojos.TY_CustomerCreate;
 import com.sap.cap.esmapi.utilities.pojos.TY_DefaultComm;
@@ -80,6 +82,7 @@ import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_Destination
 import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 import com.sap.cap.esmapi.vhelps.pojos.TY_KeyValue;
 
+import io.vavr.API.Match.Case;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -4060,6 +4063,73 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         }
 
         return formattedExternalNotes;
+    }
+
+    @Override
+    public boolean confirmCase(TY_CaseConfirmPOJO caseDetails) throws EX_ESMAPI, IOException
+    {
+        boolean caseConfirmed = false;
+        if (caseDetails != null)
+        {
+            if (StringUtils.hasText(caseDetails.getETag()) && StringUtils.hasText(caseDetails.getCaseGuid())
+                    && StringUtils.hasText(caseDetails.getCnfStatusCode()))
+            {
+
+                HttpClient httpclient = HttpClients.createDefault();
+                String casePOSTURL = getPOSTURL4BaseUrl(srvCloudUrls.getCaseDetailsUrl());
+                if (StringUtils.hasText(casePOSTURL))
+                {
+                    HttpPatch httpPatch = new HttpPatch(casePOSTURL);
+                    httpPatch.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
+                    httpPatch.addHeader("Content-Type", "application/json");
+                    httpPatch.addHeader(GC_Constants.gc_IFMatch, caseDetails.getETag());
+                    ObjectMapper objMapper = new ObjectMapper();
+
+                    TY_Case_SrvCloud_Confirm caseConfirmPayload = new TY_Case_SrvCloud_Confirm(
+                            caseDetails.getCnfStatusCode());
+
+                    String requestBody = objMapper.writeValueAsString(caseConfirmPayload);
+                    StringEntity entity = new StringEntity(requestBody, ContentType.APPLICATION_JSON);
+                    httpPatch.setEntity(entity);
+
+                    // PATCH Case in Service Cloud
+                    try
+                    {
+                        // Fire the Url
+                        HttpResponse response = httpclient.execute(httpPatch);
+                        // verify the valid error code first
+                        int statusCode = response.getStatusLine().getStatusCode();
+                        if (statusCode != HttpStatus.SC_OK)
+                        {
+                            HttpEntity entityResp = response.getEntity();
+                            String apiOutput = EntityUtils.toString(entityResp);
+                            log.error(apiOutput);
+                            // ERR_CASE_CONFIRM= Error Confirming Case id - {0}. HTTP Status - {1}. Details
+                            // : {2}.
+                            throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASE_CONFIRM", new Object[]
+                            { caseDetails.getCaseId(), statusCode, apiOutput }, Locale.ENGLISH));
+
+                        }
+                        else
+                        {
+                            caseConfirmed = true;
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASE_CONFIRM", new Object[]
+                        { caseDetails.getCaseId(), HttpStatus.SC_EXPECTATION_FAILED, e.getLocalizedMessage() },
+                                Locale.ENGLISH));
+                    }
+
+                }
+
+            }
+        }
+
+        return caseConfirmed;
+
     }
 
     private String getPOSTURL4BaseUrl(String urlBase)

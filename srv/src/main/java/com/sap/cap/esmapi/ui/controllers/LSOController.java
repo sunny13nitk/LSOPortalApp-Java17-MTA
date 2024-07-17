@@ -646,6 +646,7 @@ public class LSOController
                         if (StringUtils.hasText(caseDetails.getETag()))
                         {
                             // Prepare Case Confirm Event and Trigger the same
+                            log.info("Etag Bound. Ready for patch....");
                         }
                     }
                 }

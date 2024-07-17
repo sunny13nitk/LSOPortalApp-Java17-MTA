@@ -27,6 +27,7 @@ import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgTemplates;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatalogSrv;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatgSrv;
+import com.sap.cap.esmapi.events.event.EV_CaseConfirmSubmit;
 import com.sap.cap.esmapi.events.event.EV_CaseFormSubmit;
 import com.sap.cap.esmapi.events.event.EV_CaseReplySubmit;
 import com.sap.cap.esmapi.exceptions.EX_CaseAlreadyConfirmed;
@@ -1009,6 +1010,9 @@ public class POCLocalController
                         if (StringUtils.hasText(caseDetails.getETag()))
                         {
                             // Prepare Case Confirm Event and Trigger the same
+                            log.info("Etag Bound. Ready for patch....");
+                            EV_CaseConfirmSubmit caseConfirmEvent = new EV_CaseConfirmSubmit(this, caseDetails);
+                            applicationEventPublisher.publishEvent(caseConfirmEvent);
                         }
                     }
                 }

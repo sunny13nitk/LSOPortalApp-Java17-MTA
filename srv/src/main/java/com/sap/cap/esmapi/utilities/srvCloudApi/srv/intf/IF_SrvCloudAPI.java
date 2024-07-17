@@ -92,13 +92,13 @@ public interface IF_SrvCloudAPI
         public TY_CaseDetails getCaseDetails4Case(String caseId, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;
 
-       
-
         public List<TY_StatusCfgItem> getStatusCfg4StatusSchema(String StatusSchema, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;
 
         public boolean updateCasewithReply(TY_CasePatchInfo patchInfo, TY_Case_SrvCloud_Reply caseReply,
                         TY_DestinationProps desProps) throws EX_ESMAPI, IOException;
+
+        public boolean confirmCase(TY_CaseConfirmPOJO caseDetails) throws EX_ESMAPI, IOException;
 
         public List<TY_PreviousAttachments> getAttachments4Case(String caseGuid, TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;

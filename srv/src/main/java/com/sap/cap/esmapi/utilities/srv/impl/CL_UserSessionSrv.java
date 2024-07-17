@@ -1812,6 +1812,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                         if (caseDetails4mAPI != null)
                         {
                             caseDetails = new TY_CaseConfirmPOJO();
+                            caseDetails.setCaseGuid(caseESS.getGuid());
                             caseDetails.setCaseType(caseESS.getCaseType());
                             caseDetails.setCaseId(caseESS.getId());
                             caseDetails.setStatus(caseESS.getStatusDesc());
@@ -1819,6 +1820,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                             caseDetails.setETag(caseDetails4mAPI.getETag());
                             caseDetails
                                     .setCnfStatusCode(statusSrv.getConfirmedStatusCode4CaseType(caseESS.getCaseType()));
+                            caseDetails.setDesProps(userSessInfo.getDestinationProps());
 
                         }
 

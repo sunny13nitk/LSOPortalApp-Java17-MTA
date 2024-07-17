@@ -1,5 +1,7 @@
 package com.sap.cap.esmapi.ui.pojos;
 
+import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_DestinationProps;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +18,5 @@ public class TY_CaseConfirmPOJO
     private String status;
     private String eTag;
     private String cnfStatusCode;
+    private TY_DestinationProps desProps;
 }
