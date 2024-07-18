@@ -82,12 +82,11 @@ import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_Destination
 import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 import com.sap.cap.esmapi.vhelps.pojos.TY_KeyValue;
 
-import io.vavr.API.Match.Case;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Profile(GC_Constants.gc_TESTProfile)
+@Profile(GC_Constants.gc_LocalProfile)
 public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 {
 
@@ -120,7 +119,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         try
         {
             if (StringUtils.hasLength(srvCloudUrls.getUserName()) && StringUtils.hasLength(srvCloudUrls.getPassword())
-                    && StringUtils.hasLength(srvCloudUrls.getCasesUrl()))
+                    && StringUtils.hasLength(srvCloudUrls.getCasesUrl())
+                    && StringUtils.hasText(srvCloudUrls.getToken()))
             {
                 log.info("Url and Credentials Found!!");
 
@@ -130,11 +130,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                     url = srvCloudUrls.getCasesUrl() + srvCloudUrls.getTopSuffix() + GC_Constants.equalsString
                             + numCases;
 
-                    String encoding = Base64.getEncoder()
-                            .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
-
                     HttpGet httpGet = new HttpGet(url);
-                    httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                    httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                     httpGet.addHeader("accept", "application/json");
 
                     try
@@ -627,11 +624,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                     String urlLink = StringsUtility.replaceURLwithParams(srvCloudUrls.getAccByEmail(), new String[]
                     { userEmail, userEmail }, GC_Constants.gc_UrlReplParam);
 
-                    if (StringUtils.hasText(urlLink))
+                    if (StringUtils.hasText(urlLink) && StringUtils.hasText(srvCloudUrls.getToken()))
                     {
-
-                        String encoding = Base64.getEncoder().encodeToString(
-                                (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
 
                         try
                         {
@@ -642,7 +636,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                             String correctEncodedURL = uri.toASCIIString();
 
                             HttpGet httpGet = new HttpGet(correctEncodedURL);
-                            httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                            httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                             httpGet.addHeader("accept", "application/json");
                             // Fire the Url
                             response = httpClient.execute(httpGet);
@@ -1207,17 +1201,15 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         {
             if (StringUtils.hasLength(srvCloudUrls.getUserNameExt())
                     && StringUtils.hasLength(srvCloudUrls.getPasswordExt())
-                    && StringUtils.hasLength(srvCloudUrls.getCaseTemplateUrl()))
+                    && StringUtils.hasLength(srvCloudUrls.getCaseTemplateUrl())
+                    && StringUtils.hasText(srvCloudUrls.getToken()))
             {
                 log.info("Url and Credentials Found!!");
 
                 url = srvCloudUrls.getCaseTemplateUrl() + caseType;
 
-                String encoding = Base64.getEncoder()
-                        .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
-
                 HttpGet httpGet = new HttpGet(url);
-                httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpGet.addHeader("accept", "application/json");
 
                 // Fire the Url
@@ -1411,15 +1403,13 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         {
             if (StringUtils.hasLength(srvCloudUrls.getUserNameExt())
                     && StringUtils.hasLength(srvCloudUrls.getPasswordExt())
-                    && StringUtils.hasLength(srvCloudUrls.getCatgTreeUrl()))
+                    && StringUtils.hasLength(srvCloudUrls.getCatgTreeUrl())
+                    && StringUtils.hasText(srvCloudUrls.getToken()))
             {
                 log.info("Url and Credentials Found!!");
 
                 urlLink = StringsUtility.replaceURLwithParams(srvCloudUrls.getCatgTreeUrl(), new String[]
                 { catalogID }, GC_Constants.gc_UrlReplParam);
-
-                String encoding = Base64.getEncoder()
-                        .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
 
                 // Query URL Encoding to avoid Illegal character error in Query
                 URL url = new URL(urlLink);
@@ -1429,7 +1419,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                 HttpGet httpGet = new HttpGet(correctEncodedURL);
 
-                httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpGet.addHeader("accept", "application/json");
 
                 // Fire the Url
@@ -2078,11 +2068,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                 {
                     String urlLink = srvCloudUrls.getEmpById() + userId;
 
-                    if (StringUtils.hasText(urlLink))
+                    if (StringUtils.hasText(urlLink) && StringUtils.hasText(srvCloudUrls.getToken()))
                     {
-
-                        String encoding = Base64.getEncoder().encodeToString(
-                                (srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
 
                         try
                         {
@@ -2093,7 +2080,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                             String correctEncodedURL = uri.toASCIIString();
 
                             HttpGet httpGet = new HttpGet(correctEncodedURL);
-                            httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                            httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                             httpGet.addHeader("accept", "application/json");
                             // Fire the Url
                             response = httpClient.execute(httpGet);
@@ -2539,19 +2526,17 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         String urlLink = null;
         try
         {
-            if (StringUtils.hasText(fieldName) && StringUtils.hasText(srvCloudUrls.getVhlpUrl()))
+            if (StringUtils.hasText(fieldName) && StringUtils.hasText(srvCloudUrls.getVhlpUrl())
+                    && StringUtils.hasText(srvCloudUrls.getToken()))
 
             {
                 log.info("Invoking Value help for FieldName : " + fieldName);
 
                 urlLink = srvCloudUrls.getVhlpUrl() + fieldName;
 
-                String encoding = Base64.getEncoder().encodeToString(
-                        (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
-
                 HttpGet httpGet = new HttpGet(urlLink);
 
-                httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpGet.addHeader("accept", "application/json");
 
                 // Fire the Url
@@ -2724,7 +2709,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                             correctEncodedURL = uri.toASCIIString();
 
                             HttpGet httpGet = new HttpGet(correctEncodedURL);
-                            httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                            httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                             httpGet.addHeader("accept", "application/json");
                             // Fire the Url
                             response = httpClient.execute(httpGet);
@@ -3051,19 +3036,17 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             String urlLink = null;
             try
             {
-                if (StringUtils.hasText(caseId) && StringUtils.hasText(srvCloudUrls.getCaseDetailsUrl()))
+                if (StringUtils.hasText(caseId) && StringUtils.hasText(srvCloudUrls.getCaseDetailsUrl())
+                        && StringUtils.hasText(srvCloudUrls.getToken()))
 
                 {
                     log.info("Fetching Details for Case ID : " + caseId);
 
                     urlLink = srvCloudUrls.getCaseDetailsUrl() + caseId;
 
-                    String encoding = Base64.getEncoder().encodeToString(
-                            (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
-
                     HttpGet httpGet = new HttpGet(urlLink);
 
-                    httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                    httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                     httpGet.addHeader("accept", "application/json");
 
                     // Fire the Url
@@ -3222,7 +3205,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             throws EX_ESMAPI, IOException
     {
         List<TY_StatusCfgItem> userStatusAssignments = null;
-        if (StringUtils.hasText(StatusSchema) && StringUtils.hasText(srvCloudUrls.getStatusSchemaUrl()))
+        if (StringUtils.hasText(StatusSchema) && StringUtils.hasText(srvCloudUrls.getStatusSchemaUrl())
+                && StringUtils.hasText(srvCloudUrls.getToken()))
         {
 
             JsonNode jsonNode = null;
@@ -3236,12 +3220,9 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                 urlLink = srvCloudUrls.getStatusSchemaUrl() + StatusSchema;
 
-                String encoding = Base64.getEncoder().encodeToString(
-                        (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
-
                 HttpGet httpGet = new HttpGet(urlLink);
 
-                httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpGet.addHeader("accept", "application/json");
 
                 // Fire the Url
@@ -3683,7 +3664,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
         final String urlAttrib = "url";
 
         if (StringUtils.hasText(caseGuid) && StringUtils.hasText(srvCloudUrls.getPrevAtt())
-                && StringUtils.hasText(srvCloudUrls.getDlAtt()))
+                && StringUtils.hasText(srvCloudUrls.getDlAtt()) && StringUtils.hasText(srvCloudUrls.getToken()))
 
         {
             log.info("Fetching Attachments for Case GUID : " + caseGuid);
@@ -3694,9 +3675,6 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             if (StringUtils.hasText(urlLink))
             {
 
-                String encoding = Base64.getEncoder().encodeToString(
-                        (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
-
                 try
                 {
 
@@ -3706,7 +3684,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                     String correctEncodedURL = uri.toASCIIString();
 
                     HttpGet httpGet = new HttpGet(correctEncodedURL);
-                    httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                    httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                     httpGet.addHeader("accept", "application/json");
                     // Fire the Url
                     response = httpClient.execute(httpGet);
@@ -3904,11 +3882,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                         urlLink = StringsUtility.replaceURLwithParams(srvCloudUrls.getDlAtt(), new String[]
                         { attDet.getId() }, GC_Constants.gc_UrlReplParam);
 
-                        if (StringUtils.hasText(urlLink))
+                        if (StringUtils.hasText(urlLink) && StringUtils.hasText(srvCloudUrls.getToken()))
                         {
-
-                            encoding = Base64.getEncoder().encodeToString(
-                                    (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
 
                             try
                             {
@@ -3919,7 +3894,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                                 String correctEncodedURL = uri.toASCIIString();
 
                                 HttpGet httpGet = new HttpGet(correctEncodedURL);
-                                httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                                httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                                 httpGet.addHeader("accept", "application/json");
                                 // Fire the Url
                                 response = httpClient.execute(httpGet);
@@ -4004,14 +3979,12 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                     urlLink = StringsUtility.replaceURLwithParams(srvCloudUrls.getNotesReadUrl(), new String[]
                     { caseId }, GC_Constants.gc_UrlReplParam);
 
-                    if (StringUtils.hasText(urlLink))
+                    if (StringUtils.hasText(urlLink) && StringUtils.hasText(srvCloudUrls.getToken()))
                     {
-                        String encoding = Base64.getEncoder().encodeToString(
-                                (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
 
                         HttpGet httpGet = new HttpGet(urlLink);
 
-                        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                        httpGet.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                         httpGet.addHeader("accept", "application/json");
 
                         // Fire the Url
@@ -4076,7 +4049,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             {
 
                 HttpClient httpclient = HttpClients.createDefault();
-                String casePOSTURL = getPOSTURL4BaseUrl(srvCloudUrls.getCaseDetailsUrl());
+                String casePOSTURL = getPOSTURL4BaseUrl(srvCloudUrls.getCaseDetailsUrl()) + caseDetails.getCaseGuid();
                 if (StringUtils.hasText(casePOSTURL))
                 {
                     HttpPatch httpPatch = new HttpPatch(casePOSTURL);
