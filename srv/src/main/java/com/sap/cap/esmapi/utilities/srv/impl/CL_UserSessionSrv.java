@@ -1701,9 +1701,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                     {
                         // Add Current CasId to Confirmed cases List already
                         this.addCaseToSessionConfirmedCases(caseId);
-                        // Also add message in the session
-                        this.addSessionMessage(msgSrc.getMessage("INFO_CASE_CONFIRMED", new Object[]
-                        { caseId }, Locale.ENGLISH));
+
                         // First check for base Url in Session if loaded
                         if (StringUtils.hasText(userSessInfo.getQualtricsUrl()))
                         {
@@ -1813,15 +1811,24 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                         {
                             caseDetails = new TY_CaseConfirmPOJO();
                             caseDetails.setCaseGuid(caseESS.getGuid());
+                            caseDetails.setSubmGuid(UUID.randomUUID().toString());
                             caseDetails.setCaseType(caseESS.getCaseType());
                             caseDetails.setCaseId(caseESS.getId());
                             caseDetails.setStatus(caseESS.getStatusDesc());
                             caseDetails.setOrigin(caseESS.getOrigin());
                             caseDetails.setETag(caseDetails4mAPI.getETag());
+                            caseDetails.setUserId(userSessInfo.getUserDetails().getUsAccEmpl().getUserId());
                             caseDetails
                                     .setCnfStatusCode(statusSrv.getConfirmedStatusCode4CaseType(caseESS.getCaseType()));
                             caseDetails.setDesProps(userSessInfo.getDestinationProps());
 
+                            String msg = msgSrc.getMessage("SUCC_CASE_CONFIRM_SUBM", new Object[]
+                            { caseESS.getId(), caseESS.getCaseType(), caseDetails.getSubmGuid(),
+                                    caseDetails.getUserId() }, Locale.ENGLISH);
+                            log.info(msg); // System Log
+
+                            // Add to Display Messages : to be shown to User or Successful Submission
+                            this.addSessionMessage(msg);
                         }
 
                     }

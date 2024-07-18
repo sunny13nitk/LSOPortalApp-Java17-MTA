@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgTemplates;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatalogSrv;
 import com.sap.cap.esmapi.catg.srv.intf.IF_CatgSrv;
+import com.sap.cap.esmapi.events.event.EV_CaseConfirmSubmit;
 import com.sap.cap.esmapi.exceptions.EX_CaseAlreadyConfirmed;
 import com.sap.cap.esmapi.exceptions.EX_ESMAPI;
 import com.sap.cap.esmapi.ui.pojos.TY_CaseConfirmPOJO;
@@ -76,6 +78,9 @@ public class LSOController
 
     @Autowired
     private IF_CountryLanguageVHelpAdj coLaDDLBSrv;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private final String caseListVWRedirect = "redirect:/lso/";
     private final String caseFormViewLXSS = "caseFormLSOLXSS";
@@ -647,6 +652,8 @@ public class LSOController
                         {
                             // Prepare Case Confirm Event and Trigger the same
                             log.info("Etag Bound. Ready for patch....");
+                            EV_CaseConfirmSubmit caseConfirmEvent = new EV_CaseConfirmSubmit(this, caseDetails);
+                            applicationEventPublisher.publishEvent(caseConfirmEvent);
                         }
                     }
                 }
