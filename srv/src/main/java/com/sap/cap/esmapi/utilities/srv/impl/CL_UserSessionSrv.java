@@ -1294,6 +1294,7 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                 List<Esmappmsglog> logsExclSubm = logs.stream()
                         .filter(l -> !(l.getMsgtype().equalsIgnoreCase(EnumMessageType.SUCC_CASE_SUBM.toString())
                                 || l.getMsgtype().equalsIgnoreCase(EnumMessageType.SUCC_CASE_REPL_SUBM.toString())
+                                || l.getMsgtype().equalsIgnoreCase(EnumMessageType.SUCC_CASE_CONFIRM_SAVE.toString())
 
                         )).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(logsExclSubm))
@@ -1829,6 +1830,10 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
 
                             // Add to Display Messages : to be shown to User or Successful Submission
                             this.addSessionMessage(msg);
+
+                            // Add Submission Guids to Session Context for REconcillation after Case
+                            // Creation Process
+                            this.userSessInfo.getSubmissionIDs().add(caseDetails.getSubmGuid());
                         }
 
                     }
