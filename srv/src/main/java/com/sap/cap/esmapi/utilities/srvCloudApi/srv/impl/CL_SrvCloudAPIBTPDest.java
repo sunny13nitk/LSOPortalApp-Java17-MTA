@@ -4326,7 +4326,8 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
 
                         HttpClient httpclient = HttpClients.createDefault();
                         String casePOSTURL = getPOSTURL4BaseUrl(CL_URLUtility.getUrl4DestinationAPI(
-                                dS.getCaseDetailsUrlPathString(), caseDetails.getDesProps().getBaseUrl()));
+                                dS.getCaseDetailsUrlPathString(), caseDetails.getDesProps().getBaseUrl()))
+                                + caseDetails.getCaseGuid();
                         if (StringUtils.hasText(casePOSTURL))
                         {
                             HttpPatch httpPatch = new HttpPatch(casePOSTURL);
