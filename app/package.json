@@ -1,8 +1,7 @@
 {
   "name": "approuter",
   "dependencies": {
-    "@sap/approuter": "^16.1.1",
-    "@dynatrace/oneagent-sdk": "1.293.144"
+    "@sap/approuter": "^16.1.1"
   },
   "engines": {
     "node": "20.13.1"
