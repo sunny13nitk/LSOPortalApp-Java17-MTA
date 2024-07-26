@@ -465,7 +465,8 @@
                   </div>
 
                   <div class="case-form-footer-btn pb-4" style="margin-left: 500px; margin-top: 25px;">
-                     <button class="ds-button ds-button--primary" name="action" value="saveCase" role="button">
+                     <button id="SubmitCaseBtn" class="ds-button ds-button--primary" name="action" value="saveCase"
+                        role="button">
                         Submit
                      </button>
                      <a href="#" class="ds-button ds-button--secondary" th:href="@{/lso/}" role="button">
@@ -483,6 +484,29 @@
    <newlxp-footer></newlxp-footer>
 
    <script>
+
+
+      $(document).ready(function ()
+      {
+         var clicked = false;
+         $("#SubmitCaseBtn").on("click", function (event)
+         {
+            if (clicked)
+            {
+               event.preventDefault();
+               return;
+            }
+            clicked = true;
+            var $this = $(this);
+            $this.addClass('disabled');
+            setTimeout(function ()
+            {
+               clicked = false;
+               $this.removeClass('disabled');
+            }, 3000); // Set your desired delay in milliseconds here - 3s currently
+         });
+      });
+
       function runToast()
       {
          var toast = Metro.toast.create("Rate Limit Exceeded!! ", function ()
