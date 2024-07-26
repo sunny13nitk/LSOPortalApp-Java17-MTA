@@ -634,8 +634,8 @@
                      <div th:if="*{caseDetails.statusTransitionCFG.transCfg.editAllowed == true}"
                         class="case-form-reply-buttons"
                         style="margin-top: 30px; margin-bottom: 10px; margin-right: 20px; margin-left: 500px;">
-                        <button class="ds-button ds-button--primary" data-hint-text="Submit Reply" name="action"
-                           value="saveCaseEdit">
+                        <button id="SubmitCaseBtn" class="ds-button ds-button--primary" data-hint-text="Submit Reply"
+                           name="action" value="saveCaseEdit">
                            Reply
                         </button>
 
@@ -672,6 +672,27 @@
    <newlxp-footer></newlxp-footer>
 
    <script>
+
+      $(document).ready(function ()
+      {
+         var clicked = false;
+         $("#SubmitCaseBtn").on("click", function (event)
+         {
+            if (clicked)
+            {
+               event.preventDefault();
+               return;
+            }
+            clicked = true;
+            var $this = $(this);
+            $this.addClass('disabled');
+            setTimeout(function ()
+            {
+               clicked = false;
+               $this.removeClass('disabled');
+            }, 4000); // Set your desired delay in milliseconds here - 4s currently
+         });
+      });
       function runToast()
       {
          var toast = Metro.toast.create("Rate Limit Exceeded!! ", function ()
