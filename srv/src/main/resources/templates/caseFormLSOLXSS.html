@@ -486,26 +486,26 @@
    <script>
 
 
-      $(document).ready(function ()
-      {
-         var clicked = false;
-         $("#SubmitCaseBtn").on("click", function (event)
-         {
-            if (clicked)
-            {
-               event.preventDefault();
-               return;
-            }
-            clicked = true;
-            var $this = $(this);
-            $this.addClass('disabled');
-            setTimeout(function ()
-            {
-               clicked = false;
-               $this.removeClass('disabled');
-            }, 3000); // Set your desired delay in milliseconds here - 3s currently
-         });
-      });
+      // $(document).ready(function ()
+      // {
+      //    var clicked = false;
+      //    $("#SubmitCaseBtn").on("click", function (event)
+      //    {
+      //       if (clicked)
+      //       {
+      //          event.preventDefault();
+      //          return;
+      //       }
+      //       clicked = true;
+      //       var $this = $(this);
+      //       $this.addClass('disabled');
+      //       setTimeout(function ()
+      //       {
+      //          clicked = false;
+      //          $this.removeClass('disabled');
+      //       }, 3000); // Set your desired delay in milliseconds here - 3s currently
+      //    });
+      // });
 
       function runToast()
       {
