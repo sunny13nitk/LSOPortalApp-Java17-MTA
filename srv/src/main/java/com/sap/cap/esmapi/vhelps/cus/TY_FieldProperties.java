@@ -17,4 +17,7 @@ public class TY_FieldProperties
     public boolean catgSpecific;
     @JsonProperty("catgListBean")
     public String catgListBean;
+    @JsonProperty("catgListBean")
+    public String fltListBean;
+
 }

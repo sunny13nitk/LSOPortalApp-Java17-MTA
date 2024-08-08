@@ -25,6 +25,8 @@ import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransI;
 import com.sap.cap.esmapi.status.pojos.TY_PortalStatusTransitions;
 import com.sap.cap.esmapi.vhelps.cus.TY_Catg_MandatoryFlds;
 import com.sap.cap.esmapi.vhelps.cus.TY_VHelpsRoot;
+import com.sap.cap.esmapi.vhelps.pojos.TY_CatgCountryMapping;
+import com.sap.cap.esmapi.vhelps.pojos.TY_CatgCountryMappingList;
 import com.sap.cap.esmapi.vhelps.pojos.TY_CountryLangaugeMapping;
 import com.sap.cap.esmapi.vhelps.pojos.TY_CountryLangaugeMappingsList;
 import com.sap.cap.esmapi.vhelps.pojos.TY_MandatoryFlds_CatgsList;
@@ -43,6 +45,7 @@ public class AppInitializrConfig
     private final String configStatusTransition = "/configCatg/statusTransitions.csv";
     private final String countryLanguMappings = "/configCatg/CountryLanguageMappings.csv";
     private final String configCatgRanks = "/configCatg/catgRanks.csv";
+    private final String countryByCatgs = "/configCatg/CountriesByCatg.csv";
 
     @Autowired
     private MessageSource msgSrc;
@@ -294,6 +297,42 @@ public class AppInitializrConfig
         }
 
         return countryLanguMappingsList;
+    }
+
+    @Bean
+    public TY_CatgCountryMappingList loadCountryCatgMappings()
+    {
+        TY_CatgCountryMappingList catgCountryMappingsList = null;
+
+        try
+        {
+
+            ClassPathResource classPathResource = new ClassPathResource(countryByCatgs);
+            if (classPathResource != null)
+            {
+                Reader reader = new InputStreamReader(classPathResource.getInputStream());
+                if (reader != null)
+                {
+                    log.info("Resource Bound... ");
+                    List<TY_CatgCountryMapping> configs = new CsvToBeanBuilder(reader).withSkipLines(1)
+                            .withType(TY_CatgCountryMapping.class).build().parse();
+
+                    if (!CollectionUtils.isEmpty(configs))
+                    {
+                        log.info("Entries in Config. Found for Categories and Country Mappings: " + configs.size());
+                        catgCountryMappingsList = new TY_CatgCountryMappingList(configs);
+                    }
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASETYPE_CFG", new Object[]
+            { configPath, e.getLocalizedMessage() }, Locale.ENGLISH));
+        }
+
+        return catgCountryMappingsList;
     }
 
     @Bean
