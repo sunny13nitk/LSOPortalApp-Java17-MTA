@@ -1199,9 +1199,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
         try
         {
-            if (StringUtils.hasLength(srvCloudUrls.getUserNameExt())
-                    && StringUtils.hasLength(srvCloudUrls.getPasswordExt())
-                    && StringUtils.hasLength(srvCloudUrls.getCaseTemplateUrl())
+            if (StringUtils.hasLength(srvCloudUrls.getCaseTemplateUrl())
                     && StringUtils.hasText(srvCloudUrls.getToken()))
             {
                 log.info("Url and Credentials Found!!");
@@ -1401,10 +1399,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
         try
         {
-            if (StringUtils.hasLength(srvCloudUrls.getUserNameExt())
-                    && StringUtils.hasLength(srvCloudUrls.getPasswordExt())
-                    && StringUtils.hasLength(srvCloudUrls.getCatgTreeUrl())
-                    && StringUtils.hasText(srvCloudUrls.getToken()))
+            if (StringUtils.hasLength(srvCloudUrls.getCatgTreeUrl()) && StringUtils.hasText(srvCloudUrls.getToken()))
             {
                 log.info("Url and Credentials Found!!");
 
