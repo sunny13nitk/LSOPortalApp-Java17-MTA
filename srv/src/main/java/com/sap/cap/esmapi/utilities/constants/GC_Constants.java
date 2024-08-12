@@ -22,6 +22,9 @@ public class GC_Constants
     public static final String gc_LSO_LANGUAGE = "LSO_Language";
     public static final String gc_LSO_LANGUAGE_DESC = "Language";
 
+    public static final String gc_LANGU_Default = "EN";
+    public static final String gc_LANGU_Default_DESC = "English";
+
     public static final String gc_SelfServiceChannel = "SELF_SERVICE";
 
     public static final String gc_NoteTypeDescription = "S001";

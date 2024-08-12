@@ -87,8 +87,13 @@ public class CL_CountryLanguageVHelpAdj implements IF_CountryLanguageVHelpAdj
                             }
                             else
                             {
-                                throw new EX_ESMAPI(msgSrc.getMessage("ERR_INVALID_LANGU", new Object[]
-                                { languKey, countryValue }, Locale.ENGLISH));
+
+                                // Default to English Language and supress the exception if no mapping for
+                                // Country for language found
+                                languDDLBExp.add(new TY_KeyValue(GC_Constants.gc_LANGU_Default,
+                                        GC_Constants.gc_LANGU_Default_DESC));
+                                // throw new EX_ESMAPI(msgSrc.getMessage("ERR_INVALID_LANGU", new Object[]
+                                // { languKey, countryValue }, Locale.ENGLISH));
 
                             }
                         }
