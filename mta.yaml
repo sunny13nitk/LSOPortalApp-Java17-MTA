@@ -42,7 +42,6 @@ modules:
         - name: lso-selfsrv-srv
     requires:
       - name: lsossrv-hdi-container
-
   - name: lso-selfsrv-srv-app
     type: approuter.nodejs
     path: app/
@@ -64,7 +63,6 @@ modules:
       - name: app-api
         properties:
           url: ${default-url}
-
 resources:
   - name: lsossrv-hdi-container
     parameters:
