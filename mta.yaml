@@ -42,6 +42,7 @@ modules:
         - name: lso-selfsrv-srv
     requires:
       - name: lsossrv-hdi-container
+
   - name: lso-selfsrv-srv-app
     type: approuter.nodejs
     path: app/
@@ -59,10 +60,12 @@ modules:
           forwardAuthToken: true
           strictSSL: true
       - name: lsossrv-xsuaa
+      - name: dynatrace-service
     provides:
       - name: app-api
         properties:
           url: ${default-url}
+
 resources:
   - name: lsossrv-hdi-container
     parameters:
@@ -81,3 +84,5 @@ resources:
       service: destination
       path: ./destination-dev.json
     type: org.cloudfoundry.managed-service
+  - name: dynatrace-service
+    type: org.cloudfoundry.existing-service
