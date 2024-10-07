@@ -330,7 +330,8 @@
                      th:if="${catgsList != null}">
                      <label>Service Category </label>
                      <select name="catgDesc" id="dropDown" data-role="select" th:field="*{catgDesc}"
-                        data-cls-option="fg-grayMouse" data-cls-selected-item="bg-teal fg-white" addEmptyValue="true"
+                        onchange="this.form.action='catgChange'; this.form.submit()" data-cls-option="fg-grayMouse"
+                        data-cls-selected-item="bg-teal fg-white" addEmptyValue="true"
                         data-cls-select="bd-red bg-transparent">
 
                         <option th:each="catg : ${catgsList}" th:value="${catg.id}" th:selected="${catg.id}"
