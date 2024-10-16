@@ -449,22 +449,34 @@ public class EV_HDLR_CaseFormSubmit
                                                                                         .getPayload().getCaseForm()
                                                                                         .getDescription()))
                                                                         {
-                                                                                // Create Note and Get Guid back
-                                                                                String noteId = srvCloudApiSrv
-                                                                                                .createNotes(new TY_NotesCreate(
-                                                                                                                evCaseFormSubmit.getPayload()
-                                                                                                                                .getCaseForm()
-                                                                                                                                .isExternal(),
-                                                                                                                evCaseFormSubmit.getPayload()
-                                                                                                                                .getCaseForm()
-                                                                                                                                .getDescription(),
-                                                                                                                GC_Constants.gc_NoteTypeDescription),
-                                                                                                                desProps);
-                                                                                if (StringUtils.hasText(noteId))
+
+                                                                                // #JIRA - ESMLSO-516
+                                                                                /*
+                                                                                 * Scramble Description for CC
+                                                                                 * Information
+                                                                                 */
+                                                                                String scrambledTxt = CL_ScramblingUtils
+                                                                                                .scrambleText(evCaseFormSubmit
+                                                                                                                .getPayload()
+                                                                                                                .getCaseForm()
+                                                                                                                .getDescription());
+                                                                                if (StringUtils.hasText(scrambledTxt))
                                                                                 {
-                                                                                        newCaseEntity4Employee
-                                                                                                        .setDescription(new TY_Description_CaseCreate(
-                                                                                                                        noteId));
+                                                                                        // Create Note and Get Guid back
+                                                                                        String noteId = srvCloudApiSrv
+                                                                                                        .createNotes(new TY_NotesCreate(
+                                                                                                                        evCaseFormSubmit.getPayload()
+                                                                                                                                        .getCaseForm()
+                                                                                                                                        .isExternal(),
+                                                                                                                        scrambledTxt,
+                                                                                                                        GC_Constants.gc_NoteTypeDescription),
+                                                                                                                        desProps);
+                                                                                        if (StringUtils.hasText(noteId))
+                                                                                        {
+                                                                                                newCaseEntity4Employee
+                                                                                                                .setDescription(new TY_Description_CaseCreate(
+                                                                                                                                noteId));
+                                                                                        }
                                                                                 }
                                                                         }
 
