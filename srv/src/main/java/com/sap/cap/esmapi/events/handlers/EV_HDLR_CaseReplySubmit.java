@@ -33,6 +33,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_CaseReplyNote;
 import com.sap.cap.esmapi.utilities.pojos.TY_Case_SrvCloud_Reply;
 import com.sap.cap.esmapi.utilities.pojos.TY_Message;
 import com.sap.cap.esmapi.utilities.pojos.TY_NotesCreate;
+import com.sap.cap.esmapi.utilities.scrambling.CL_ScramblingUtils;
 import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_DestinationProps;
 import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 
@@ -126,16 +127,25 @@ public class EV_HDLR_CaseReplySubmit
                                     // Create REply in Configured Note Type
                                     if (StringUtils.hasText(cfgO.get().getReplyNoteType()))
                                     {
-                                        // Create Note and Get Guid back
-                                        String noteId = srvCloudApiSrv.createNotes(new TY_NotesCreate(false,
-                                                evCaseReply.getPayload().getCaseReply().getReply(),
-                                                cfgO.get().getReplyNoteType()), desProps);
-                                        if (StringUtils.hasText(noteId))
+
+                                        // #JIRA - ESMLSO-516
+                                        /*
+                                         * Scramble Description for CC Information
+                                         */
+                                        String scrambledTxt = CL_ScramblingUtils
+                                                .scrambleText(evCaseReply.getPayload().getCaseReply().getReply());
+                                        if (StringUtils.hasText(scrambledTxt))
                                         {
-                                            caseReplyPayload.getNotes()
-                                                    .add(new TY_CaseReplyNote(
-                                                            evCaseReply.getPayload().getCaseReply().getReply(), null,
-                                                            noteId, cfgO.get().getReplyNoteType()));
+                                            // Create Note and Get Guid back
+                                            String noteId = srvCloudApiSrv.createNotes(new TY_NotesCreate(false,
+                                                    scrambledTxt, cfgO.get().getReplyNoteType()), desProps);
+                                            if (StringUtils.hasText(noteId))
+                                            {
+                                                caseReplyPayload.getNotes()
+                                                        .add(new TY_CaseReplyNote(
+                                                                evCaseReply.getPayload().getCaseReply().getReply(),
+                                                                null, noteId, cfgO.get().getReplyNoteType()));
+                                            }
                                         }
                                     }
                                     else

@@ -36,6 +36,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_Employee_CaseCreate;
 import com.sap.cap.esmapi.utilities.pojos.TY_Extensions_CaseCreate;
 import com.sap.cap.esmapi.utilities.pojos.TY_Message;
 import com.sap.cap.esmapi.utilities.pojos.TY_NotesCreate;
+import com.sap.cap.esmapi.utilities.scrambling.CL_ScramblingUtils;
 import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_DestinationProps;
 import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 
@@ -198,22 +199,35 @@ public class EV_HDLR_CaseFormSubmit
                                                                                         .getPayload().getCaseForm()
                                                                                         .getDescription()))
                                                                         {
-                                                                                // Create Note and Get Guid back
-                                                                                String noteId = srvCloudApiSrv
-                                                                                                .createNotes(new TY_NotesCreate(
-                                                                                                                evCaseFormSubmit.getPayload()
-                                                                                                                                .getCaseForm()
-                                                                                                                                .isExternal(),
-                                                                                                                evCaseFormSubmit.getPayload()
-                                                                                                                                .getCaseForm()
-                                                                                                                                .getDescription(),
-                                                                                                                GC_Constants.gc_NoteTypeDescription),
-                                                                                                                desProps);
-                                                                                if (StringUtils.hasText(noteId))
+
+                                                                                // #JIRA - ESMLSO-516
+                                                                                /*
+                                                                                 * Scramble Description for CC
+                                                                                 * Information
+                                                                                 */
+                                                                                String scrambledTxt = CL_ScramblingUtils
+                                                                                                .scrambleText(evCaseFormSubmit
+                                                                                                                .getPayload()
+                                                                                                                .getCaseForm()
+                                                                                                                .getDescription());
+                                                                                if (StringUtils.hasText(scrambledTxt))
                                                                                 {
-                                                                                        newCaseEntity4Customer
-                                                                                                        .setDescription(new TY_Description_CaseCreate(
-                                                                                                                        noteId));
+
+                                                                                        // Create Note and Get Guid back
+                                                                                        String noteId = srvCloudApiSrv
+                                                                                                        .createNotes(new TY_NotesCreate(
+                                                                                                                        evCaseFormSubmit.getPayload()
+                                                                                                                                        .getCaseForm()
+                                                                                                                                        .isExternal(),
+                                                                                                                        scrambledTxt,
+                                                                                                                        GC_Constants.gc_NoteTypeDescription),
+                                                                                                                        desProps);
+                                                                                        if (StringUtils.hasText(noteId))
+                                                                                        {
+                                                                                                newCaseEntity4Customer
+                                                                                                                .setDescription(new TY_Description_CaseCreate(
+                                                                                                                                noteId));
+                                                                                        }
                                                                                 }
                                                                         }
 
