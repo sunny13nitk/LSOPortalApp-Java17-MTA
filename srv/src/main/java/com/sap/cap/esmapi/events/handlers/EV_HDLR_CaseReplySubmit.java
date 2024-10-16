@@ -141,10 +141,8 @@ public class EV_HDLR_CaseReplySubmit
                                                     scrambledTxt, cfgO.get().getReplyNoteType()), desProps);
                                             if (StringUtils.hasText(noteId))
                                             {
-                                                caseReplyPayload.getNotes()
-                                                        .add(new TY_CaseReplyNote(
-                                                                evCaseReply.getPayload().getCaseReply().getReply(),
-                                                                null, noteId, cfgO.get().getReplyNoteType()));
+                                                caseReplyPayload.getNotes().add(new TY_CaseReplyNote(scrambledTxt, null,
+                                                        noteId, cfgO.get().getReplyNoteType()));
                                             }
                                         }
                                     }
@@ -152,16 +150,21 @@ public class EV_HDLR_CaseReplySubmit
                                     {
                                         // Create REply in Default Note Type
                                         // Create Note and Get Guid back
-                                        String noteId = srvCloudApiSrv.createNotes(
-                                                new TY_NotesCreate(false,
-                                                        evCaseReply.getPayload().getCaseReply().getReply(), null),
-                                                desProps);
-                                        if (StringUtils.hasText(noteId))
+                                        // #JIRA - ESMLSO-516
+                                        /*
+                                         * Scramble Description for CC Information
+                                         */
+                                        String scrambledTxt = CL_ScramblingUtils
+                                                .scrambleText(evCaseReply.getPayload().getCaseReply().getReply());
+                                        if (StringUtils.hasText(scrambledTxt))
                                         {
-                                            caseReplyPayload.getNotes()
-                                                    .add(new TY_CaseReplyNote(
-                                                            evCaseReply.getPayload().getCaseReply().getReply(), null,
-                                                            noteId, null));
+                                            String noteId = srvCloudApiSrv.createNotes(
+                                                    new TY_NotesCreate(false, scrambledTxt, null), desProps);
+                                            if (StringUtils.hasText(noteId))
+                                            {
+                                                caseReplyPayload.getNotes()
+                                                        .add(new TY_CaseReplyNote(scrambledTxt, null, noteId, null));
+                                            }
                                         }
 
                                     }
