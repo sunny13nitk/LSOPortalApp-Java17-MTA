@@ -24,6 +24,8 @@ public class CL_ScramblingUtils
 
         scrambledTxt = text.replaceAll("(\\d*)\\.(\\d+)", "$1$2");
         scrambledTxt = scrambledTxt.replaceAll("(\\d*)\\,(\\d+)", "$1$2");
+        scrambledTxt = scrambledTxt.replaceAll("(\\d*)\\-(\\d+)", "$1$2");
+        scrambledTxt = scrambledTxt.replaceAll("(\\d*)\\_(\\d+)", "$1$2");
         scrambledTxt = scrambledTxt.replaceAll("(\\d*)\\s(\\d+)", "$1$2");
 
         scrambledTxt = redactCC(scrambledTxt);
