@@ -1215,7 +1215,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                 // verify the valid error code first
                 int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode != HttpStatus.SC_OK)
+                    if (statusCode != HttpStatus.SC_OK)
                 {
 
                     if (statusCode == HttpStatus.SC_NOT_FOUND)

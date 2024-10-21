@@ -25,6 +25,10 @@ public interface IF_UserSessionSrv
     // For Test Purpose Only to TEst the Controller - #Test
     public void loadUser4Test();
 
+    public void setPreviousCategory(String catg);
+
+    public String getPreviousCategory();
+
     // For Test Purpose Only to Test the Controller - #Test
     public TY_UserSessionInfo getSessionInfo4Test();
 

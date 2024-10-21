@@ -2041,4 +2041,16 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         throw new EX_ESMAPI(msg);
     }
 
+    @Override
+    public void setPreviousCategory(String catg)
+    {
+        this.userSessInfo.setPrevCatg(catg);
+    }
+
+    @Override
+    public String getPreviousCategory()
+    {
+        return this.userSessInfo.getPrevCatg();
+    }
+
 }
