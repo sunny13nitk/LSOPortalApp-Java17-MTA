@@ -57,7 +57,6 @@ public class EV_HDLR_CaseFormSubmit
         @Autowired
         private IF_SrvCloudAPI srvCloudApiSrv;
 
-        @Async
         @EventListener
         public void handleCaseFormSubmission(EV_CaseFormSubmit evCaseFormSubmit)
         {

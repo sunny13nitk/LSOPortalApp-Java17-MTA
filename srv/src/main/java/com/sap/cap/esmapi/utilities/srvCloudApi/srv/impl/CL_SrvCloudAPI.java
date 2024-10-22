@@ -1215,7 +1215,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                 // verify the valid error code first
                 int statusCode = response.getStatusLine().getStatusCode();
-                    if (statusCode != HttpStatus.SC_OK)
+                if (statusCode != HttpStatus.SC_OK)
                 {
 
                     if (statusCode == HttpStatus.SC_NOT_FOUND)
@@ -1570,21 +1570,8 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             String notesPOSTURL = srvCloudUrls.getNotesUrl();
             if (StringUtils.hasText(notesPOSTURL))
             {
-                String encoding = null;
-                if (notes.isExternal())
-                {
-                    encoding = Base64.getEncoder().encodeToString(
-                            (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
-                }
-                else
-                {
-                    encoding = Base64.getEncoder()
-                            .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
-
-                }
-
                 HttpPost httpPost = new HttpPost(notesPOSTURL);
-                httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpPost.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpPost.addHeader("Content-Type", "application/json");
 
                 ObjectMapper objMapper = new ObjectMapper();
@@ -1698,10 +1685,9 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             String casePOSTURL = getPOSTURL4BaseUrl(srvCloudUrls.getCasesUrl());
             if (StringUtils.hasText(casePOSTURL))
             {
-                String encoding = Base64.getEncoder()
-                        .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
+
                 HttpPost httpPost = new HttpPost(casePOSTURL);
-                httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpPost.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpPost.addHeader("Content-Type", "application/json");
 
                 ObjectMapper objMapper = new ObjectMapper();
@@ -1823,23 +1809,23 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             {
                 HttpClient httpclient = HttpClients.createDefault();
                 String docPOSTURL = srvCloudUrls.getDocSrvUrl();
-                String encoding = null;
-                if (attachment.isExternal())
-                {
-                    encoding = Base64.getEncoder().encodeToString(
-                            (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
-                }
-                else
-                {
-                    encoding = Base64.getEncoder()
-                            .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
+                // String encoding = null;
+                // if (attachment.isExternal())
+                // {
+                //     encoding = Base64.getEncoder().encodeToString(
+                //             (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
+                // }
+                // else
+                // {
+                //     encoding = Base64.getEncoder()
+                //             .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
 
-                }
+                // }
 
                 // Call Attachment POST to generate the Document Store Url
 
                 HttpPost httpPost = new HttpPost(docPOSTURL);
-                httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpPost.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpPost.addHeader("Content-Type", "application/json");
 
                 ObjectMapper objMapper = new ObjectMapper();
@@ -3406,7 +3392,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                 String encoding = Base64.getEncoder()
                         .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
                 HttpPost httpPost = new HttpPost(casePOSTURL);
-                httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpPost.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpPost.addHeader("Content-Type", "application/json");
 
                 ObjectMapper objMapper = new ObjectMapper();
@@ -3539,7 +3525,7 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
 
                 }
                 HttpPost httpPost = new HttpPost(casePOSTURL);
-                httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+                httpPost.setHeader(HttpHeaders.AUTHORIZATION, srvCloudUrls.getToken());
                 httpPost.addHeader("Content-Type", "application/json");
 
                 ObjectMapper objMapper = new ObjectMapper();
