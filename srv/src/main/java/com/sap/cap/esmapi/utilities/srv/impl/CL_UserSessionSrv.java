@@ -1101,6 +1101,21 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
                         usAccConEmpl.setEmployee(true);
                         usAccConEmpl.setEmployeeId(empID);
                     }
+
+                    // Check for Valid Attachment Types
+                    try
+                    {
+                        List<String> attTypes = srvCloudApiSrv.getAllowedAttachmentTypes(desProps).getBody();
+                        if (CollectionUtils.isNotEmpty(attTypes))
+                        {
+                            log.info("Attachment Types bound");
+                        }
+                    }
+                    catch (EX_ESMAPI | IOException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
 
             }

@@ -33,7 +33,8 @@ public class SrvCloudPropsTest
             @Value("${casesByAcc}") final String casesByAccUrl, @Value("${casesByEmpl}") final String casesByEmplUrl,
             @Value("${customerurl}") final String customerUrl, @Value("${prevAtt}") final String prevAtt,
             @Value("${dlAtt}") final String dlAtt, @Value("${baseUrl}") final String baseUrl,
-            @Value("${token}") final String token
+            @Value("${token}") final String token,
+            @Value("${mimeTypesUrlPathString}") final String mimeTypesUrlPathString
 
     )
 
@@ -41,7 +42,7 @@ public class SrvCloudPropsTest
         TY_SrvCloudUrls srvClUrls = new TY_SrvCloudUrls(userName, password, userNameExt, passwordExt, casesUrl, cpUrl,
                 acUrl, notesUrl, notesreadUrl, topN, caseTemplateUrl, catgTreeUrl, docSrvUrl, emplSrvUrl, vhlpUrl,
                 caseDetailsUrl, statusCfgUrl, accByEmailUrl, conByEmailUrl, empByIdUrl, casesByAccUrl, casesByEmplUrl,
-                customerUrl, prevAtt, dlAtt, baseUrl, token);
+                customerUrl, prevAtt, dlAtt, baseUrl, token,mimeTypesUrlPathString);
 
         return srvClUrls;
     }

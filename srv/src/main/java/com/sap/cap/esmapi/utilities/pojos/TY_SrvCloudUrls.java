@@ -38,5 +38,6 @@ public class TY_SrvCloudUrls
     private String dlAtt;
     private String baseUrl;
     private String token;
+    private String mimeTypesUrlPathString;
 
 }

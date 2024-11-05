@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
 import com.sap.cap.esmapi.utilities.pojos.TY_DestinationsSuffix;
+
 //Dedstinations Suffixes
 @Configuration
 @PropertySources(
@@ -21,7 +22,7 @@ public class DestinationsSuffixes
             @Value("${cpurlPathString}") final String cpUrlPathString,
             @Value("${accountsurlPathString}") final String acUrlPathString,
             @Value("${notesurlPathString}") final String notesUrlPathString,
-            @Value("${notesReadPathString}") final String notesReadPathString,            
+            @Value("${notesReadPathString}") final String notesReadPathString,
             @Value("${topNPathString}") final String topNPathString,
             @Value("${caseTemplateUrlPathString}") final String caseTemplateUrlPathString,
             @Value("${catgTreeUrlPathString}") final String catgTreeUrlPathString,
@@ -39,17 +40,18 @@ public class DestinationsSuffixes
             @Value("${prevAttPathString}") final String prevAttPathString,
             @Value("${dlAttPathString}") final String dlAttPathString,
             @Value("${destInternal}") final String destInternal, @Value("${destExternal}") final String destExternal,
-            @Value("${destQualtrics}") final String destQualtrics
+            @Value("${destQualtrics}") final String destQualtrics,
+            @Value("${mimeTypesUrlPathString}") final String mimeTypesUrlPathString
 
     )
 
     {
         TY_DestinationsSuffix destinationsSuffixes = new TY_DestinationsSuffix(casesUrlPathString, cpUrlPathString,
-                acUrlPathString, notesUrlPathString,notesReadPathString, topNPathString, caseTemplateUrlPathString, catgTreeUrlPathString,
-                docSrvUrlPathString, emplSrvUrlPathString, vhlpUrlPathString, caseDetailsUrlPathString,
-                statusCfgUrlPathString, accByEmailUrlPathString, conByEmailUrlPathString, empByIdUrlPathString,
-                casesByAccUrlPathString, casesByEmplUrlPathString, customerUrlPathString, prevAttPathString,
-                dlAttPathString, destInternal, destExternal, destQualtrics);
+                acUrlPathString, notesUrlPathString, notesReadPathString, topNPathString, caseTemplateUrlPathString,
+                catgTreeUrlPathString, docSrvUrlPathString, emplSrvUrlPathString, vhlpUrlPathString,
+                caseDetailsUrlPathString, statusCfgUrlPathString, accByEmailUrlPathString, conByEmailUrlPathString,
+                empByIdUrlPathString, casesByAccUrlPathString, casesByEmplUrlPathString, customerUrlPathString,
+                prevAttPathString, dlAttPathString, destInternal, destExternal, destQualtrics, mimeTypesUrlPathString);
 
         return destinationsSuffixes;
     }

@@ -40,6 +40,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,6 +79,7 @@ import com.sap.cap.esmapi.utilities.pojos.TY_RLConfig;
 import com.sap.cap.esmapi.utilities.pojos.TY_SrvCloudUrls;
 import com.sap.cap.esmapi.utilities.pojos.Ty_UserAccountEmployee;
 import com.sap.cap.esmapi.utilities.srv.intf.IF_APISrv;
+import com.sap.cap.esmapi.utilities.srvCloudApi.destination.URLUtility.CL_URLUtility;
 import com.sap.cap.esmapi.utilities.srvCloudApi.destination.pojos.TY_DestinationProps;
 import com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf.IF_SrvCloudAPI;
 import com.sap.cap.esmapi.vhelps.pojos.TY_KeyValue;
@@ -1812,13 +1814,15 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
                 // String encoding = null;
                 // if (attachment.isExternal())
                 // {
-                //     encoding = Base64.getEncoder().encodeToString(
-                //             (srvCloudUrls.getUserNameExt() + ":" + srvCloudUrls.getPasswordExt()).getBytes());
+                // encoding = Base64.getEncoder().encodeToString(
+                // (srvCloudUrls.getUserNameExt() + ":" +
+                // srvCloudUrls.getPasswordExt()).getBytes());
                 // }
                 // else
                 // {
-                //     encoding = Base64.getEncoder()
-                //             .encodeToString((srvCloudUrls.getUserName() + ":" + srvCloudUrls.getPassword()).getBytes());
+                // encoding = Base64.getEncoder()
+                // .encodeToString((srvCloudUrls.getUserName() + ":" +
+                // srvCloudUrls.getPassword()).getBytes());
 
                 // }
 
@@ -4098,6 +4102,178 @@ public class CL_SrvCloudAPI implements IF_SrvCloudAPI
             }
         }
         return url;
+    }
+
+    @Override
+    public ResponseEntity<List<String>> getAllowedAttachmentTypes(TY_DestinationProps desProps)
+            throws EX_ESMAPI, IOException
+    {
+
+        List<String> allowedAttachments = null;
+        if (desProps != null && srvCloudUrls != null)
+        {
+
+            if (StringUtils.hasText(desProps.getAuthToken()))
+            {
+                JsonNode jsonNode = null;
+                HttpResponse response = null;
+                CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+                String urlLink = null;
+
+                try
+                {
+
+                    if (StringUtils.hasLength(srvCloudUrls.getMimeTypesUrlPathString()))
+                    {
+                        log.info("Url and Credentials Found!!");
+
+                        urlLink = CL_URLUtility.getUrl4DestinationAPI(srvCloudUrls.getMimeTypesUrlPathString(),
+                                desProps.getBaseUrl());
+                        // Query URL Encoding to avoid Illegal character error in Query
+                        URL url = new URL(urlLink);
+                        URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()),
+                                url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+                        String correctEncodedURL = uri.toASCIIString();
+
+                        HttpGet httpGet = new HttpGet(correctEncodedURL);
+
+                        httpGet.setHeader(HttpHeaders.AUTHORIZATION, desProps.getAuthToken());
+                        httpGet.addHeader("accept", "application/json");
+
+                        // Fire the Url
+                        response = httpClient.execute(httpGet);
+
+                        // verify the valid error code first
+                        int statusCode = response.getStatusLine().getStatusCode();
+                        if (statusCode != org.apache.http.HttpStatus.SC_OK)
+                        {
+
+                            if (statusCode == org.apache.http.HttpStatus.SC_NOT_FOUND)
+                            {
+
+                                // ERR_MIME_TYPES_API=Error Reading Allowed Mime Type Value(s) from SDocument
+                                // Service API. Details - {0}.
+                                throw new EX_ESMAPI(msgSrc.getMessage("ERR_MIME_TYPES_API", new Object[]
+                                { "Not FOUND any Status Values" }, Locale.ENGLISH));
+                            }
+                            else
+                            {
+                                throw new EX_ESMAPI(msgSrc.getMessage("ERR_MIME_TYPES_APII", new Object[]
+                                { statusCode }, Locale.ENGLISH));
+                            }
+
+                        }
+
+                        // Try and Get Entity from Response
+                        HttpEntity entity = response.getEntity();
+                        String apiOutput = EntityUtils.toString(entity);
+                        // Lets see what we got from API
+                        // log.info(apiOutput);
+
+                        // Conerting to JSON
+                        ObjectMapper mapper = new ObjectMapper();
+                        jsonNode = mapper.readTree(apiOutput);
+
+                        if (jsonNode != null)
+                        {
+                            JsonNode rootNode = jsonNode.path("value");
+                            if (rootNode != null)
+                            {
+                                log.info("Customizing Bound!!");
+
+                                Iterator<Map.Entry<String, JsonNode>> payloadItr = jsonNode.fields();
+                                while (payloadItr.hasNext())
+                                {
+
+                                    Map.Entry<String, JsonNode> payloadEnt = payloadItr.next();
+                                    String payloadFieldName = payloadEnt.getKey();
+
+                                    if (payloadFieldName.equals("value"))
+                                    {
+                                        allowedAttachments = new ArrayList<String>();
+                                        Iterator<JsonNode> cusItr = payloadEnt.getValue().elements();
+                                        // log.info("Cases Iterator Bound");
+                                        while (cusItr.hasNext())
+                                        {
+
+                                            JsonNode cusEnt = cusItr.next();
+                                            if (cusEnt != null)
+                                            {
+                                                boolean isAllowed = false;
+
+                                                Iterator<String> fieldNames = cusEnt.fieldNames();
+                                                while (fieldNames.hasNext())
+                                                {
+                                                    String cusFieldName = fieldNames.next();
+                                                    if (cusFieldName.equals("isAllowed"))
+                                                    {
+                                                        if (cusEnt.get(cusFieldName).asBoolean())
+                                                        {
+                                                            isAllowed = cusEnt.get(cusFieldName).asBoolean();
+                                                        }
+
+                                                    }
+
+                                                    if (isAllowed)
+                                                    {
+
+                                                        JsonNode contentNode = cusEnt.at("/fileExtensions");
+                                                        if (contentNode != null && contentNode.isArray()
+                                                                && contentNode.size() > 0)
+                                                        {
+                                                            log.info("File Extensions Bound");
+
+                                                            for (JsonNode arrayItem : contentNode)
+                                                            {
+                                                                String attType = null;
+
+                                                                Iterator<Entry<String, JsonNode>> fields = arrayItem
+                                                                        .fields();
+                                                                while (fields.hasNext())
+                                                                {
+                                                                    Entry<String, JsonNode> jsonField = fields.next();
+                                                                    if (jsonField.getKey().equals("name"))
+                                                                    {
+                                                                        attType = jsonField.getValue().asText();
+                                                                        allowedAttachments.add(attType);
+                                                                    }
+
+                                                                }
+
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    throw new EX_ESMAPI(msgSrc.getMessage("ERR_STATUS_API", new Object[]
+                    { e.getMessage() }, Locale.ENGLISH));
+
+                }
+                finally
+                {
+                    httpClient.close();
+                }
+            }
+
+        }
+
+        return new ResponseEntity<>(allowedAttachments, org.springframework.http.HttpStatus.OK);
     }
 
 }
