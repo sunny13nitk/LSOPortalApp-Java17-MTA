@@ -34,7 +34,7 @@ public class CL_ScramblingUtils
     {
         String scrambledTxt = null;
 
-        scrambledTxt = redactCCDash(scrambledTxt);
+        scrambledTxt = redactCCDash(text);
         scrambledTxt = redactCCComma(scrambledTxt);
         scrambledTxt = redactCCSpace(scrambledTxt);
 
