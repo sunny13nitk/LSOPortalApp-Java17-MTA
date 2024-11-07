@@ -63,6 +63,7 @@ modules:
           forwardAuthToken: true
           strictSSL: true
       - name: lsossrv-xsuaa
+      - name: dynatrace-service
     provides:
       - name: app-api
         properties:
@@ -86,3 +87,5 @@ resources:
       service: destination
       path: ./destination-test.json
     type: org.cloudfoundry.managed-service
+  - name: dynatrace-service
+    type: org.cloudfoundry.existing-service    
