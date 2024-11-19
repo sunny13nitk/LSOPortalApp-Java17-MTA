@@ -3,6 +3,7 @@ package com.sap.cap.esmapi.utilities.srvCloudApi.srv.intf;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -104,6 +105,9 @@ public interface IF_SrvCloudAPI
                         throws EX_ESMAPI, IOException;
 
         public List<TY_NotesDetails> getFormattedNotes4Case(String caseGuid, TY_DestinationProps desProps)
+                        throws EX_ESMAPI, IOException;
+
+        public ResponseEntity<List<String>> getAllowedAttachmentTypes(TY_DestinationProps desProps)
                         throws EX_ESMAPI, IOException;
 
 }

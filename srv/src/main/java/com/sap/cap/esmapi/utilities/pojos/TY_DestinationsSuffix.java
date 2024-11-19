@@ -35,5 +35,6 @@ public class TY_DestinationsSuffix
     private String destInternal;
     private String destExternal;
     private String destQualtrics;
+    private String mimeTypesUrlPathString;
 
 }

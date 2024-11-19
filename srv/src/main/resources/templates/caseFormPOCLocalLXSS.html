@@ -312,10 +312,11 @@
                <h6 style="color: #54627B; margin-left: 10px">Create new Case.
                   <span style="color: #B1365B" th:text="${caseTypeStr}"></span> !
                </h6>
-               <form th:object="${caseForm}" enctype="multipart/form-data" th:action="@{/poclocal/saveCase}"
-                  method="post">
+               <form id="caseForm" th:object="${caseForm}" enctype="multipart/form-data"
+                  th:action="@{/poclocal/saveCase}" method="post">
                   <input type="hidden" th:field="*{accId}" />
                   <input type="hidden" th:field="*{caseTxnType}" />
+                  <input type="hidden" th:field="*{catgChange}" id="catgChange" />
                   <div class="colspan-9 offset-1" style="margin-top: 15px; margin-bottom: 10px;">
                      <label>Subject </label>
                      <input class="alert metro-input input-large" type="text" data-role="input"
@@ -331,7 +332,7 @@
                      <label>Service Category </label>
                      <select name="catgDesc" id="dropDown" data-role="select" th:field="*{catgDesc}"
                         data-cls-option="fg-grayMouse" data-cls-selected-item="bg-teal fg-white" addEmptyValue="true"
-                        data-cls-select="bd-red bg-transparent">
+                        data-cls-select="bd-red bg-transparent" onchange="getCatgSel(this)">
 
                         <option th:each="catg : ${catgsList}" th:value="${catg.id}" th:selected="${catg.id}"
                            th:text="${catg.parentName != null} ? ${catg.parentName} + '>' +${catg.name}: ${catg.name}">
@@ -480,11 +481,39 @@
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
    <script th:inline="javascript">
 
-      $('#dropDown').change(function ()
+      function getCatgSel(selectObject)
       {
-         $('#refresh').prop('disabled', $(this).val() === "")
-      });
+         var value = selectObject.value;
+         var formData = new FormData($("#caseForm")[0]);
 
+         var catgChange = formData.get('catgChange');
+         console.log("Category - Changed " + catgChange);
+
+         if (Boolean(value) && catgChange)
+         {
+            console.log("Catg. Bound..")
+            console.log(value);
+            console.log("Category - Changed " + catgChange);
+
+            $.ajax({
+               type: "POST",
+               url: "/poclocal/selCatg",
+               data: formData,
+               processData: false,
+               contentType: false,
+               success: function (catgChanged)
+               {
+                  if (catgChanged === true)
+                  {
+                     console.log("Reloading Case Form for Selected Category");
+                     console.log(catgChanged);
+                     window.location.href = '/poclocal/refreshForm4SelCatg'; // redirect     //this would be GET
+                  }
+               }
+
+            });
+         }
+      }
    </script>
 
    <!-- Metro 4 -->

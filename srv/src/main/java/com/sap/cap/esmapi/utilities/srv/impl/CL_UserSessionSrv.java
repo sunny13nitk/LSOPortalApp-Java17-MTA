@@ -1849,6 +1849,18 @@ public class CL_UserSessionSrv implements IF_UserSessionSrv
         return caseDetails;
     }
 
+    @Override
+    public void setPreviousCategory(String catg)
+    {
+        this.userSessInfo.setPrevCatg(catg);
+    }
+
+    @Override
+    public String getPreviousCategory()
+    {
+        return this.userSessInfo.getPrevCatg();
+    }
+
     private void handleCaseReplyError()
     {
         String msg = msgSrc.getMessage("ERR_CASE_PAYLOAD", new Object[]

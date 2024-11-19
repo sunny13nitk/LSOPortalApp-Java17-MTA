@@ -39,5 +39,5 @@ public class TY_UserSessionInfo
     private boolean activeSubmission; // Handle successful Submission - UI toast message on Cases List
     private String qualtricsUrl; // Placeholder for Qualtrics Url
     private List<String> cnfCasesSess = new ArrayList<String>(); // Placeholder for Confirmed cases in session
-
+    private String prevCatg; // Category selected Previous
 }
