@@ -13,10 +13,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCus;
 import com.sap.cap.esmapi.catg.pojos.TY_CatgCusItem;
@@ -39,6 +41,7 @@ import com.sap.cap.esmapi.utilities.uimodel.intf.IF_CountryLanguageVHelpAdj;
 import com.sap.cap.esmapi.vhelps.srv.intf.IF_VHelpLOBUIModelSrv;
 import com.sap.cds.services.request.UserInfo;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -413,7 +416,7 @@ public class LSOPostController
     public String adjustLanguage4Country(@ModelAttribute("caseForm") TY_Case_Form caseForm, Model model)
     {
 
-        String viewCaseForm = caseFormViewLXSS ;
+        String viewCaseForm = caseFormViewLXSS;
         if (caseForm != null && userSessSrv != null)
         {
 
@@ -494,6 +497,141 @@ public class LSOPostController
 
         return viewCaseForm;
 
+    }
+
+    @PostMapping(value = "/selCatg")
+    public @ResponseBody Boolean refreshCaseForm4CatgSel(@ModelAttribute("caseForm") TY_Case_Form caseForm, Model model)
+    {
+        Boolean catgChanged = false;
+
+        if (caseForm != null && userSessSrv != null)
+        {
+            if (!StringUtils.hasText(userSessSrv.getPreviousCategory()))
+            {
+                if (StringUtils.hasText(caseForm.getCatgDesc()))
+                {
+                    userSessSrv.setPreviousCategory(caseForm.getCatgDesc());
+                    caseForm.setCatgChange(true);
+                    log.info("Category changed by User ...");
+                }
+            }
+            else
+            {
+                if (StringUtils.hasText(caseForm.getCatgDesc()))
+                {
+                    if (!userSessSrv.getPreviousCategory().equals(caseForm.getCatgDesc()))
+                    {
+                        userSessSrv.setPreviousCategory(caseForm.getCatgDesc());
+                        caseForm.setCatgChange(true);
+                        log.info("Category changed by User ...");
+                    }
+                    else
+                    {
+                        caseForm.setCatgChange(false);
+                        log.info("Category not changed by User ...");
+                    }
+                }
+
+            }
+            userSessSrv.setCaseFormB4Submission(caseForm);
+
+            log.info("Catg : " + caseForm.getCatgDesc());
+            catgChanged = caseForm.isCatgChange();
+        }
+
+        return catgChanged;
+
+    }
+
+    @GetMapping("/refreshForm4SelCatg")
+    public String refreshFormCxtx4SelCatg(HttpServletRequest request, Model model)
+    {
+        if (userSessSrv != null)
+        {
+            TY_Case_Form caseForm = userSessSrv.getCaseFormB4Submission();
+
+            if (caseForm != null)
+            {
+                userSessSrv.setCaseFormB4Submission(null);
+
+                // Normal Scenario - Catg. chosen Not relevant for Notes Template and/or
+                // additional fields
+
+                if ((StringUtils.hasText(userSessSrv.getUserDetails4mSession().getAccountId())
+                        || StringUtils.hasText(userSessSrv.getUserDetails4mSession().getEmployeeId()))
+                        && !CollectionUtils.isEmpty(catgCusSrv.getCustomizations()))
+                {
+
+                    Optional<TY_CatgCusItem> cusItemO = catgCusSrv.getCustomizations().stream()
+                            .filter(g -> g.getCaseTypeEnum().toString().equals(EnumCaseTypes.Learning.toString()))
+                            .findFirst();
+                    if (cusItemO.isPresent() && catgTreeSrv != null)
+                    {
+
+                        model.addAttribute("caseTypeStr", EnumCaseTypes.Learning.toString());
+
+                        // Populate User Details
+                        TY_UserESS userDetails = new TY_UserESS();
+                        userDetails.setUserDetails(userSessSrv.getUserDetails4mSession());
+                        model.addAttribute("userInfo", userDetails);
+
+                        // clear Form errors on each refresh or a New Case form request
+                        if (CollectionUtils.isNotEmpty(userSessSrv.getFormErrors()))
+                        {
+                            userSessSrv.clearFormErrors();
+                        }
+
+                        // also Upload the Catg. Tree as per Case Type
+                        model.addAttribute("catgsList",
+                                catalogTreeSrv.getCaseCatgTree4LoB(EnumCaseTypes.Learning).getCategories());
+
+                        // Scan Current Catg for Templ. Load and or Additional Fields
+
+                        // Scan for Template Load
+                        TY_CatgTemplates catgTemplate = catalogTreeSrv.getTemplates4Catg(caseForm.getCatgDesc(),
+                                EnumCaseTypes.Learning);
+                        if (catgTemplate != null)
+                        {
+
+                            // Set Questionnaire for Category
+                            caseForm.setTemplate(catgTemplate.getQuestionnaire());
+
+                        }
+
+                        if (vhlpUISrv != null)
+                        {
+                            model.addAllAttributes(coLaDDLBSrv.adjustCountryLanguageDDLB(caseForm.getCountry(),
+                                    vhlpUISrv.getVHelpUIModelMap4LobCatg(EnumCaseTypes.Learning,
+                                            caseForm.getCatgDesc())));
+                        }
+
+                        // Case Form Model Set at last
+                        model.addAttribute("caseForm", caseForm);
+
+                        if (attSrv != null)
+                        {
+                            if (CollectionUtils.isNotEmpty(attSrv.getAttachmentNames()))
+                            {
+                                model.addAttribute("attachments", attSrv.getAttachmentNames());
+                            }
+                        }
+
+                        // Attachment file Size
+                        model.addAttribute("attSize", rlConfig.getAllowedSizeAttachmentMB());
+                    }
+                    else
+                    {
+
+                        throw new EX_ESMAPI(msgSrc.getMessage("ERR_CASE_TYPE_NOCFG", new Object[]
+                        { EnumCaseTypes.Learning.toString() }, Locale.ENGLISH));
+                    }
+
+                }
+            }
+
+        }
+
+        return caseFormViewLXSS;
     }
 
 }
