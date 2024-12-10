@@ -87,7 +87,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Profile(GC_Constants.gc_BTPProfile)
+@Profile(GC_Constants.gc_BTPProfile) //BTP Profile
 public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
 {
 
