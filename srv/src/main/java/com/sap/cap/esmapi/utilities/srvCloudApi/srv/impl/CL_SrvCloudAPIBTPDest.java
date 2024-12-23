@@ -2233,6 +2233,8 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                                                 url.getQuery(), url.getRef());
                                         String correctEncodedURL = uri.toASCIIString();
 
+                                        log.info(" Employee Scan with url : " + correctEncodedURL);
+
                                         HttpGet httpGet = new HttpGet(correctEncodedURL);
                                         httpGet.setHeader(HttpHeaders.AUTHORIZATION, desProps.getAuthToken());
                                         httpGet.addHeader("accept", "application/json");
@@ -2243,8 +2245,7 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                                         int statusCode = response.getStatusLine().getStatusCode();
                                         if (statusCode != HttpStatus.SC_OK)
                                         {
-                                            log.info("Failed for Employee Scan with url : " + urlLink);
-                                            log.info("Failed for Employee Scan with url : " + correctEncodedURL);
+                                            
                                             throw new RuntimeException("Failed with HTTP error code : " + statusCode);
                                         }
 
