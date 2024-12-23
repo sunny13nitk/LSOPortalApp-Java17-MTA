@@ -2212,6 +2212,7 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                             && userId.matches(rlConfig.getInternalUsersRegex()))
                     {
                         userId = '\'' + userId + '\''; // In Parmeter Form
+                        log.info("Employee Scan for User : " + userId);
                         if (StringUtils.hasText(dS.getEmpByIdPathString()))
                         {
 
@@ -2242,6 +2243,8 @@ public class CL_SrvCloudAPIBTPDest implements IF_SrvCloudAPI
                                         int statusCode = response.getStatusLine().getStatusCode();
                                         if (statusCode != HttpStatus.SC_OK)
                                         {
+                                            log.info("Failed for Employee Scan with url : " + urlLink);
+                                            log.info("Failed for Employee Scan with url : " + correctEncodedURL);
                                             throw new RuntimeException("Failed with HTTP error code : " + statusCode);
                                         }
 
