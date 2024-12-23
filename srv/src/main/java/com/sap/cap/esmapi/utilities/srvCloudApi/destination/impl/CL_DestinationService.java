@@ -54,13 +54,13 @@ public class CL_DestinationService implements IF_DestinationService
             if (dest != null)
             {
 
-                log.info("Destination Bound via Destination Accessor.");
+                log.info("Destination Bound via Destination Accessor. Details....");
 
                 destinationProps = new TY_DestinationProps();
 
                 for (String prop : dest.getPropertyNames())
                 {
-
+                    log.info(prop + ":" + dest.get(prop).get().toString());
                     if (prop.equals(prop_URL))
                     {
                         destinationProps.setBaseUrl(dest.get(prop).get().toString());
