@@ -27,8 +27,6 @@ public class CL_DestinationService implements IF_DestinationService
 
     private final MessageSource msgSrc;
 
-    private TY_DestinationProps destinationProps;
-
     private static final String prop_URL = "URL";
     private static final String prop_Token = "cloudsdk.authTokens";
     private static final String cons_value = ", value=";
@@ -37,15 +35,14 @@ public class CL_DestinationService implements IF_DestinationService
     @Override
     public TY_DestinationProps getDestinationDetails4User(String DestinationName) throws EX_ESMAPI
     {
-        if (this.destinationProps == null)
-        {
-            getDestinationDetails(DestinationName);
-        }
-        return this.destinationProps;
+
+        return getDestinationDetails(DestinationName);
+
     }
 
-    private void getDestinationDetails(String destinationName)
+    private TY_DestinationProps getDestinationDetails(String destinationName)
     {
+        TY_DestinationProps desProps = null;
         try
         {
 
@@ -56,19 +53,19 @@ public class CL_DestinationService implements IF_DestinationService
 
                 log.info("Destination Bound via Destination Accessor. Details....");
 
-                destinationProps = new TY_DestinationProps();
+                desProps = new TY_DestinationProps();
 
                 for (String prop : dest.getPropertyNames())
                 {
-                    log.info(prop + ":" + dest.get(prop).get().toString());
+
                     if (prop.equals(prop_URL))
                     {
-                        destinationProps.setBaseUrl(dest.get(prop).get().toString());
+                        desProps.setBaseUrl(dest.get(prop).get().toString());
                     }
 
                     if (prop.equals(prop_Token))
                     {
-                        destinationProps.setAuthToken(parseToken(dest.get(prop).get().toString()));
+                        desProps.setAuthToken(parseToken(dest.get(prop).get().toString()));
                     }
 
                 }
@@ -83,6 +80,8 @@ public class CL_DestinationService implements IF_DestinationService
             throw new EX_ESMAPI(msg);
 
         }
+
+        return desProps;
     }
 
     private String parseToken(String authToken)
