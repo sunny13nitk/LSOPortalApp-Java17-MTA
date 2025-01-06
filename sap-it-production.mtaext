@@ -63,6 +63,7 @@ modules:
           forwardAuthToken: true
           strictSSL: true
       - name: lsossrv-xsuaa
+      - name: dynatrace-service # dynatrace monitoring service binding
     provides:
       - name: app-api
         properties:
